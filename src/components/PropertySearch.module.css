@@ -41,11 +41,11 @@
 
 .heading {
   max-width: 22ch;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(2.25rem, 3.5vw, 3.6rem);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.08;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
@@ -251,7 +251,8 @@
 
 .placeholder p {
   max-width: 22ch;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
   font-size: 1.75rem;
   letter-spacing: -0.025em;
 }
