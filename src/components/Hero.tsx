@@ -58,6 +58,7 @@ export default function Hero() {
               { label: "Search Homes", href: "/buy" },
               { label: "New Construction", href: "/guides/new-construction" },
               { label: "VA Buyers", href: "/guides/va-loan" },
+              { label: "Military & Veteran Army", href: "/guides/va-loan" },
               { label: "Sell My Home", href: "/guides/sellers" },
             ].map((c) => (
               <Link
