@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import LocationSearch from "./LocationSearch";
 import BackgroundVideo from "./BackgroundVideo";
 import {
   MagnifyingGlass,
@@ -21,18 +18,6 @@ const trust = [
 ];
 
 export default function Hero() {
-  const router = useRouter();
-  const [q, setQ] = useState("");
-  const [price, setPrice] = useState("any");
-  function goSearch(term?: string) {
-    const params = new URLSearchParams();
-    const value = (term ?? q).trim();
-    if (value) params.set("q", value);
-    if (price !== "any") params.set("price", price);
-    const query = params.toString();
-    router.push(`/buy${query ? `?${query}` : ""}`);
-  }
-
   return (
     <section id="top" className="relative min-h-[100dvh]">
       {/* Background video */}
@@ -57,41 +42,15 @@ export default function Hero() {
             deal, not just any deal.
           </p>
 
-          {/* Live location search */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              goSearch();
-            }}
-            className="relative mt-9 flex flex-col gap-2 rounded-2xl bg-white/95 p-2 shadow-soft backdrop-blur sm:flex-row"
-          >
-            <LocationSearch
-              value={q}
-              onChange={setQ}
-              onSelect={(s) => goSearch(s.name)}
-              onSubmit={() => goSearch()}
-              label="Search location"
-              placeholder="City, neighborhood, ZIP, or address"
-            />
-            <div className="hidden w-px bg-navy-900/10 sm:block" />
-            <label className="flex items-center gap-2 px-3">
-              <span className="sr-only">Price range</span>
-              <select
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full cursor-pointer bg-transparent py-3 text-sm text-ink outline-none sm:w-auto"
-              >
-                <option value="any">Any price</option>
-                <option value="under-500k">Under $500k</option>
-                <option value="500-750k">$500k to $750k</option>
-                <option value="750k-plus">$750k+</option>
-              </select>
-            </label>
-            <button type="submit" className="btn-gold px-6 py-3.5">
-              <MagnifyingGlass size={16} weight="bold" />
-              Search Homes
-            </button>
-          </form>
+          <div className="mt-9">
+            <Link href="/buy" className="btn-gold px-6 py-3.5">
+              <MagnifyingGlass size={18} weight="bold" />
+              Search MLS Homes
+            </Link>
+            <p className="mt-3 text-sm text-white/75">
+              Browse current listings and choose your location, price, and home features.
+            </p>
+          </div>
 
           {/* Immediate choices */}
           <div className="mt-4 flex flex-wrap gap-2.5">

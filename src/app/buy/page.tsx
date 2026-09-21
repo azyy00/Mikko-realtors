@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import FeaturedListings from "@/components/FeaturedListings";
 import PropertySearch from "@/components/PropertySearch";
 
 export const metadata: Metadata = {
@@ -34,7 +33,6 @@ export default async function BuyPage({
           initialQuery={q}
           initialPrice={price}
         />
-        <FeaturedListings />
 
         {/* Back to full site / contact */}
         <section className="bg-paper py-20">

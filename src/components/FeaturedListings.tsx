@@ -106,7 +106,7 @@ export default function FeaturedListings() {
                 <span className="text-xs text-muted">{l.area}</span>
               </div>
               <Link
-                href={`/buy?q=${encodeURIComponent(l.address)}`}
+                href="/buy"
                 className="mt-1 inline-block text-sm text-navy-800 underline decoration-navy-900/25 underline-offset-4 hover:decoration-navy-900"
               >
                 {l.address}

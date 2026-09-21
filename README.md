@@ -48,7 +48,7 @@
 | Capability | What it delivers |
 |---|---|
 | Cinematic introduction | Video-led hero, clear positioning, and an immediate property-search entry point |
-| Property discovery | Filterable listings, map-based browsing, responsive cards, and focused listing previews |
+| Property discovery | Embedded Matrix MLS search with current listings and the provider's search filters |
 | Local expertise | Dedicated community, relocation, cost-of-living, and new-construction content |
 | Buyer resources | Mortgage and VA loan calculators plus downloadable homebuyer guides |
 | Seller conversion | Home-valuation flow, sold-property proof, strong calls to action, and lead capture |
@@ -72,7 +72,7 @@
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS with a custom navy, gold, and sage design system
 - **Motion:** Framer Motion
-- **Maps:** MapLibre GL with Protomaps basemap styling
+- **MLS search:** Matrix IDX embed on the homepage and buyer page
 - **Icons:** Phosphor Icons
 - **Lead handling:** Server-side validation, rate limiting, and webhook forwarding
 
@@ -89,7 +89,7 @@ Add the required values to `.env.local`:
 
 | Variable | Purpose |
 |---|---|
-| `NEXT_PUBLIC_MAP_KEY` | Browser-safe map provider key; restrict it to approved origins |
+| `NEXT_PUBLIC_MAP_KEY` | Optional key for the legacy MapLibre component; not needed by the MLS embed |
 | `LEAD_WEBHOOK_URL` | Private server-side CRM or automation webhook for lead delivery |
 
 Never prefix the lead webhook with `NEXT_PUBLIC_`; it must remain server-only.
@@ -133,12 +133,29 @@ Core listing, review, community, and agent content lives in
 [`src/lib/data.ts`](./src/lib/data.ts). Blog posts, guides, and sold-home records are
 kept in their respective modules inside `src/lib/`.
 
+## MLS search integration
+
+The homepage search section and `/buy` embed Mikko's public Matrix IDX search.
+The provider URL lives in [`src/lib/mls.ts`](./src/lib/mls.ts); no private MLS API
+credential is required. The homepage mounts the embed when the section enters
+view, while the buyer page loads it immediately.
+
+Matrix supplies its own search form, results, and styling. This embed does not
+provide a listing API or populate the previous custom MapLibre markers. Visitors
+set their filters inside Matrix; old `/buy?q=…&price=…` links display a reminder
+to enter those preferences, rather than claiming the embed has applied them.
+
+The provider's fixed-width form can scroll horizontally on small screens.
+An “Open full search” link is always available if embedding is blocked or the
+visitor prefers a separate tab. Featured cards elsewhere still use explicitly
+labeled sample data and are not synchronized with MLS results.
+
 ## Production integrations
 
 The interface and lead endpoint are in place; these external services should be
 connected and reviewed before a public launch:
 
-- Replace demonstration listing data and photography with an authorized MLS/IDX feed.
+- Replace the separate demonstration featured cards with authorized listing data if required; the main property search already uses Matrix IDX.
 - Configure `LEAD_WEBHOOK_URL` for the production CRM or automation platform.
 - Restrict the public map key by origin and enable provider-side usage limits.
 - Connect approved Google Business Profile review data where live synchronization is required.
