@@ -150,6 +150,10 @@ An “Open full search” link is always available if embedding is blocked or th
 visitor prefers a separate tab. Featured cards elsewhere still use explicitly
 labeled sample data and are not synchronized with MLS results.
 
+The search layout includes an expanded view that keeps the current MLS search
+in place. See [MLS search design](./docs/mls-search-design.md) for the applied
+website styling and the separate provider-controlled styling options.
+
 ## Production integrations
 
 The interface and lead endpoint are in place; these external services should be

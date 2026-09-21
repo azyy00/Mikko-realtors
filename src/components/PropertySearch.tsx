@@ -1,8 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import {
+  ArrowRight,
+  ArrowSquareOut,
+  ArrowsIn,
+  ArrowsOut,
+  CaretRight,
+  Compass,
+} from "@phosphor-icons/react";
 import { MLS_SEARCH_URL } from "@/lib/mls";
+import styles from "./PropertySearch.module.css";
 
 type Props = {
   showFilters?: boolean;
@@ -22,82 +32,158 @@ export default function PropertySearch({
   initialPrice = "any",
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
+  const expandButtonRef = useRef<HTMLButtonElement>(null);
   const [enabled, setEnabled] = useState(showFilters);
   const [loaded, setLoaded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [expandError, setExpandError] = useState("");
 
   useEffect(() => {
     if (enabled || !containerRef.current || !("IntersectionObserver" in window))
       return;
 
-    // Mount only once the search is visible: background MLS scripts must not
-    // load or take focus while a visitor is still reading the homepage hero.
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setEnabled(true);
-        observer.disconnect();
-      }
-    }, { threshold: 0.01 });
+    // The homepage must stay at the hero until visitors reach the search.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setEnabled(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.01 },
+    );
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [enabled]);
 
+  useEffect(() => {
+    setCanExpand(Boolean(document.fullscreenEnabled));
+    let wasExpanded = false;
+    function onFullscreenChange() {
+      const active = document.fullscreenElement === workspaceRef.current;
+      setExpanded(active);
+      if (wasExpanded && !active)
+        expandButtonRef.current?.focus({ preventScroll: true });
+      wasExpanded = active;
+    }
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
+
+  async function toggleExpanded() {
+    setExpandError("");
+    try {
+      if (document.fullscreenElement === workspaceRef.current) {
+        await document.exitFullscreen();
+      } else {
+        // Keep the same iframe mounted, preserving search criteria and results.
+        await workspaceRef.current?.requestFullscreen();
+      }
+    } catch {
+      setExpandError("Expanded view is unavailable. Use Open full search to browse in a new tab.");
+    }
+  }
+
   const Heading = showFilters ? "h1" : "h2";
-  const preference = [
-    initialQuery.trim().slice(0, 120),
-    priceLabels[initialPrice],
-  ].filter(Boolean).join(" · ");
+  const preference = [initialQuery.trim().slice(0, 120), priceLabels[initialPrice]]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <section
       id="search"
       aria-labelledby="property-search-heading"
-      className={`bg-cream ${showFilters ? "pb-16 pt-28" : "py-24"}`}
+      className={`${styles.section} ${showFilters ? styles.searchPage : ""}`}
     >
-      <div className="container-x">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className={styles.container}>
+        {showFilters && (
+          <nav aria-label="Breadcrumb" className={styles.breadcrumb}>
+            <Link href="/">Home</Link>
+            <CaretRight size={12} aria-hidden="true" />
+            <span aria-current="page">Homes for sale</span>
+          </nav>
+        )}
+
+        <div className={styles.introduction}>
           <div>
-            <Heading id="property-search-heading" className="display text-4xl text-ink sm:text-5xl">
-              Find your home in the valley
+            <Heading id="property-search-heading" className={styles.heading}>
+              Find your place <span>in Las Vegas.</span>
             </Heading>
-            <p className="subhead mt-4 max-w-2xl">
-              Search current listings by location, price, and the details that
-              matter to you.
+            <p className={styles.description}>
+              A neighborhood you love. Room for what&apos;s next.
+              Explore homes across the valley, on your terms.
             </p>
           </div>
-          {!showFilters && (
-            <Link href="/buy" className="btn-gold shrink-0">
-              Explore homes for sale
+          {showFilters ? (
+            <Link href="/#contact" className={styles.advisor}>
+              <Image
+                src="/profile/mikko.png"
+                alt="Mikko Lucernas"
+                width={56}
+                height={64}
+                className={styles.portrait}
+              />
+              <span>
+                <span className={styles.advisorLabel}>Your local perspective</span>
+                <span className={styles.advisorName}>Ask Mikko <ArrowRight size={16} aria-hidden="true" /></span>
+              </span>
+            </Link>
+          ) : (
+            <Link href="/buy" className={styles.browseLink}>
+              Browse all homes <ArrowRight size={18} aria-hidden="true" />
             </Link>
           )}
         </div>
 
         {preference && (
-          <p className="mt-6 rounded-xl bg-white p-4 text-sm text-navy-800">
+          <p className={styles.preference}>
             Looking for {preference}? Enter your preferences in the MLS search
             below to see matching homes.
           </p>
         )}
 
-        <div className="mt-8 overflow-hidden rounded-xl2 border border-navy-900/10 bg-white shadow-soft">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-navy-900/10 px-4 py-4 sm:px-6">
-            <div>
-              <p className="text-sm font-semibold text-navy-900">MLS property search</p>
-              <p role="status" className="mt-1 text-xs text-muted">
-                {loaded ? "Powered by Matrix" : enabled ? "Loading MLS search…" : "Browse homes below"}
-              </p>
+        <div ref={workspaceRef} className={styles.workspace}>
+          <div className={styles.toolbar}>
+            <div className={styles.searchIdentity}>
+              <span className={styles.searchIcon}><Compass size={22} weight="regular" aria-hidden="true" /></span>
+              <div>
+                <h3 className={styles.searchTitle}>Explore the valley</h3>
+                <p role="status" className={styles.status}>
+                  {loaded ? "Listings provided by Matrix MLS" : enabled ? "Opening MLS search…" : "MLS homes, all in one place"}
+                </p>
+              </div>
             </div>
-            <a
-              href={MLS_SEARCH_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center text-sm font-semibold text-navy-700 underline underline-offset-4 hover:text-gold-600"
-            >
-              Open full search <span className="sr-only">(opens in a new tab)</span>
-              <span aria-hidden="true" className="ml-2">↗</span>
-            </a>
+            <div className={styles.actions}>
+              {canExpand && (
+                <button
+                  ref={expandButtonRef}
+                  type="button"
+                  onClick={toggleExpanded}
+                  aria-pressed={expanded}
+                  className={styles.expandButton}
+                >
+                  {expanded ? <ArrowsIn size={17} aria-hidden="true" /> : <ArrowsOut size={17} aria-hidden="true" />}
+                  {expanded ? "Exit expanded view" : "Expand search"}
+                </button>
+              )}
+              <a
+                href={MLS_SEARCH_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.externalLink}
+              >
+                Open full search <ArrowSquareOut size={17} aria-hidden="true" />
+                <span className="sr-only">(opens in a new tab)</span>
+              </a>
+            </div>
           </div>
-          <p id="mls-mobile-hint" className="px-4 py-3 text-sm text-muted md:hidden">
-            Swipe sideways inside the search to see all filters, or open the full search.
+
+          {expandError && <p role="status" className={styles.error}>{expandError}</p>}
+
+          <p id="mls-mobile-hint" className={styles.mobileHint}>
+            Scroll sideways for all filters, or open the full search in a new tab.
           </p>
           <div
             ref={containerRef}
@@ -105,30 +191,36 @@ export default function PropertySearch({
             aria-label="MLS search panel"
             aria-describedby="mls-mobile-hint"
             tabIndex={0}
-            className="relative overflow-x-auto overscroll-x-contain"
+            className={styles.searchPanel}
           >
             {enabled ? (
-                <iframe
-                  src={MLS_SEARCH_URL}
-                  title="Las Vegas MLS listings — search homes with Mikko Lucernas"
-                  width="100%"
-                  height="900"
-                  className="block h-[85svh] max-h-[1100px] min-h-[780px] min-w-[720px] w-full border-0 bg-white"
-                  onLoad={() => setLoaded(true)}
-                />
+              <iframe
+                src={MLS_SEARCH_URL}
+                title="Las Vegas MLS listings — search homes with Mikko Lucernas"
+                width="100%"
+                height="900"
+                className={styles.frame}
+                onLoad={() => setLoaded(true)}
+              />
             ) : (
-              <div className="grid h-[85svh] max-h-[1100px] min-h-[780px] place-items-center px-6 text-center">
-                <button type="button" className="btn-gold" onClick={() => setEnabled(true)}>
-                  Load MLS search
+              <div className={styles.placeholder}>
+                <Compass size={36} weight="light" aria-hidden="true" />
+                <p>Your next home is worth a closer look.</p>
+                <button type="button" className={styles.loadButton} onClick={() => setEnabled(true)}>
+                  Start exploring <ArrowRight size={17} aria-hidden="true" />
                 </button>
               </div>
             )}
           </div>
-          <p className="border-t border-navy-900/10 px-4 py-4 text-sm text-muted sm:px-6">
-            Search provided by Matrix MLS. If the search doesn&apos;t appear, use
-            “Open full search” above to continue in a new tab.
-          </p>
+          <div className={styles.searchFooter}>
+            <span>Las Vegas · Henderson · North Las Vegas</span>
+            <span>Search not appearing? <a href={MLS_SEARCH_URL} target="_blank" rel="noopener noreferrer">Open in a new tab <span className="sr-only">(opens in a new tab)</span></a></span>
+          </div>
         </div>
+
+        <p className={styles.guidance}>
+          Found a home you like? <Link href="/#contact">Let&apos;s take a closer look together <ArrowRight size={15} aria-hidden="true" /></Link>
+        </p>
       </div>
     </section>
   );
