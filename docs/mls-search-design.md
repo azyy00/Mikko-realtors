@@ -6,7 +6,8 @@ The same Matrix iframe and IDX identifier continue to serve real listings.
 
 ## Applied to the website
 
-- Wider search area, capped at 1440px.
+- Dedicated buyer search spans the viewport with 24px desktop / 12px mobile
+  side margins; the homepage preview remains capped at 1440px.
 - Global Oswald display font and inherited Inter body font, quiet sage accents,
   and a compact search toolbar.
 - Direct contact with Mikko using his existing professional portrait.

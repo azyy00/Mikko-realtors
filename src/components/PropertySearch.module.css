@@ -16,6 +16,11 @@
   margin-inline: auto;
 }
 
+/* The dedicated search page uses the viewport, not the marketing-page grid. */
+.searchPage .container {
+  width: calc(100% - 3rem);
+}
+
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -331,6 +336,10 @@
 
   .container {
     width: 94%;
+  }
+
+  .searchPage .container {
+    width: calc(100% - 1.5rem);
   }
 
   .breadcrumb {
