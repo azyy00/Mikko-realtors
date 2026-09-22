@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Nav from "@/components/Nav";
 import StructuredData from "@/components/StructuredData";
 import Hero from "@/components/Hero";
@@ -24,7 +25,9 @@ export default function Home() {
         <JustSold />
         <About />
         <Reviews />
-        <BlogTeaser />
+        <Suspense fallback={<section aria-label="Blog updates" aria-busy="true" className="min-h-96 bg-paper" />}>
+          <BlogTeaser />
+        </Suspense>
         <Contact />
       </main>
       <Footer />

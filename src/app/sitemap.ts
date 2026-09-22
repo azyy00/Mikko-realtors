@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 import { guides } from "@/lib/guides";
-import { blogPosts } from "@/lib/blog";
+import { getBlogPosts } from "@/lib/blog-feed";
 import { communities } from "@/lib/data";
 
 // Update this to the real domain once it's live.
 const BASE = "https://mikkolucernas.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const blogPosts = await getBlogPosts();
   const staticRoutes = [
     "",
     "/buy",

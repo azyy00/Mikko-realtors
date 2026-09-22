@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import BlogArchive from "@/components/BlogArchive";
-import { blogPosts } from "@/lib/blog";
+import { getBlogPosts } from "@/lib/blog-feed";
 
 export const metadata: Metadata = {
   title: "Mikko's Blog | Mikko Lucernas",
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
     "Las Vegas real estate updates, new-construction news, buyer and seller tips, and market insights from REALTOR® Mikko Lucernas.",
 };
 
-export default function BlogIndex() {
+export default async function BlogIndex() {
+  const posts = await getBlogPosts();
   return (
     <>
       <Nav solid />
@@ -21,14 +22,14 @@ export default function BlogIndex() {
               Mikko&apos;s Blog
             </h1>
             <p className="subhead mt-4 max-w-2xl">
-              Fresh posts and clips, straight from Mikko&apos;s social feeds.
+              Real estate insights and the latest updates from Mikko.
             </p>
           </div>
         </section>
 
         <section className="bg-paper pb-16 pt-6">
           <div className="container-x">
-            <BlogArchive posts={blogPosts} />
+            <BlogArchive posts={posts} />
           </div>
         </section>
       </main>

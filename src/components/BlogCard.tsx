@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlayCircle } from "@phosphor-icons/react";
+import { PlayCircle } from "@phosphor-icons/react/dist/ssr";
 import { formatDate, type BlogPost } from "@/lib/blog";
 
 function cover(seed: string, w: number, h: number) {
@@ -13,7 +13,8 @@ export default function BlogCard({
   post: BlogPost;
   featured?: boolean;
 }) {
-  const isVideo = !!(post.youTubeId || post.localVideo);
+  const isVideo = !!(post.youTubeId || post.localVideo || post.source?.isVideo);
+  const image = post.coverImage || cover(post.coverSeed, featured ? 1400 : 800, featured ? 760 : 600);
 
   return (
     <Link
@@ -22,15 +23,12 @@ export default function BlogCard({
         featured ? "aspect-[16/10] sm:aspect-[21/9]" : "aspect-[4/3]"
       }`}
     >
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-        style={{
-          backgroundImage: `url(${cover(
-            post.coverSeed,
-            featured ? 1400 : 800,
-            featured ? 760 : 600,
-          )})`,
-        }}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={image}
+        alt=""
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/45 to-navy-950/5" />
 

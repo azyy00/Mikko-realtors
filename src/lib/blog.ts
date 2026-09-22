@@ -6,14 +6,16 @@ export type BlogPost = {
   date: string; // ISO
   readMinutes: number;
   coverSeed: string; // picsum placeholder cover
+  coverImage?: string;
+  source?: { platform: "facebook"; url: string; isVideo: boolean };
   youTubeId?: string; // optional embedded YouTube vlog (real posts)
   localVideo?: string; // optional self-hosted video (demo)
   body: string[]; // paragraphs
   cta: string;
 };
 
-// Sample posts. Once the social-to-blog automation is connected, new posts
-// (and their videos) are appended here automatically.
+// Existing editorial/sample content. Live Facebook posts are merged at read time
+// by blog-feed.ts; webhook handlers never rewrite this source file.
 export const blogPosts: BlogPost[] = [
   {
     slug: "va-family-new-home-north-las-vegas",

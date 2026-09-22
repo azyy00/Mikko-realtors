@@ -4,7 +4,8 @@ import Link from "next/link";
 import { CaretRight, ArrowRight, ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { blogPosts, getPost, formatDate } from "@/lib/blog";
+import { blogPosts, formatDate } from "@/lib/blog";
+import { getBlogPost } from "@/lib/blog-feed";
 
 export function generateStaticParams() {
   return blogPosts.map((p) => ({ slug: p.slug }));
@@ -16,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getBlogPost(slug);
   if (!post) return {};
   return {
     title: `${post.title} | Mikko Lucernas`,
@@ -31,7 +32,7 @@ export default async function BlogArticle({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getBlogPost(slug);
   if (!post) notFound();
 
   return (
@@ -80,7 +81,7 @@ export default async function BlogArticle({
                   ) : (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
-                      src={`https://picsum.photos/seed/${post.coverSeed}/1200/900`}
+                      src={post.coverImage || `https://picsum.photos/seed/${post.coverSeed}/1200/900`}
                       alt={post.title}
                       className="aspect-[4/3] w-full object-cover"
                     />
@@ -107,12 +108,25 @@ export default async function BlogArticle({
                   {post.body.map((p, i) => (
                     <p
                       key={i}
-                      className="mt-5 leading-relaxed text-navy-800 first:mt-0"
+                      className="mt-5 whitespace-pre-line leading-relaxed text-navy-800 first:mt-0"
                     >
                       {p}
                     </p>
                   ))}
                 </div>
+
+                {post.source && (
+                  <a
+                    href={post.source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy-700 underline underline-offset-4 hover:text-gold-600"
+                  >
+                    {post.source.isVideo ? "Watch the original on Facebook" : "Read the original on Facebook"}
+                    <span className="sr-only">(opens in a new tab)</span>
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </a>
+                )}
 
                 {/* CTA */}
                 <div className="mt-8 rounded-xl2 bg-navy-950 p-7 text-white">

@@ -1,13 +1,11 @@
-"use client";
-
 import Link from "next/link";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import Reveal from "./Reveal";
 import BlogCard from "./BlogCard";
-import { blogPosts } from "@/lib/blog";
+import { getBlogPosts } from "@/lib/blog-feed";
 
-export default function BlogTeaser() {
-  const posts = blogPosts.slice(0, 3);
+export default async function BlogTeaser() {
+  const posts = (await getBlogPosts()).slice(0, 3);
   if (posts.length === 0) return null;
 
   return (

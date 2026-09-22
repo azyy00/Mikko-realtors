@@ -156,6 +156,12 @@ website styling and the separate provider-controlled styling options.
 
 ## Production integrations
 
+Facebook Page updates can now appear in the blog and homepage through a
+server-only Graph API connector and verified webhook. **Activation still requires
+the client's Page credentials and Meta app subscription.**
+See [Facebook blog setup](./docs/facebook-blog.md) for permissions, environment
+variables, callback configuration, refresh timing, and limitations.
+
 The interface and lead endpoint are in place; these external services should be
 connected and reviewed before a public launch:
 
