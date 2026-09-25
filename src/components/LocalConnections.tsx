@@ -31,7 +31,7 @@ export default function LocalConnections() {
     <section
       id="local-connections"
       aria-labelledby="local-connections-heading"
-      className="border-b border-navy-900/10 bg-cream py-14 sm:py-16"
+      className="border-b border-navy-900/10 bg-white py-14 sm:py-16"
     >
       <div className="container-x grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <div>

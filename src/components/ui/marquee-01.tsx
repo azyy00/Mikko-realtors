@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Pause, Play, Star } from "@phosphor-icons/react";
+import { Star } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee-01-utils/marquee";
 import type { Review } from "@/lib/data";
@@ -46,7 +45,6 @@ export default function TestimonialMarquee({
 }: {
   reviews: readonly Review[];
 }) {
-  const [paused, setPaused] = useState(false);
   const split = Math.ceil(reviews.length / 2);
   const rows = [reviews.slice(0, split), reviews.slice(split)].filter(
     (row) => row.length > 0,
@@ -55,22 +53,6 @@ export default function TestimonialMarquee({
 
   return (
     <div className="mt-8">
-      <div className="mb-4 flex justify-center">
-        <button
-          type="button"
-          aria-pressed={paused}
-          aria-controls="review-marquee-rows"
-          onClick={() => setPaused((value) => !value)}
-          className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy-800 underline underline-offset-4 motion-reduce:hidden"
-        >
-          {paused ? (
-            <Play size={14} aria-hidden="true" />
-          ) : (
-            <Pause size={14} aria-hidden="true" />
-          )}
-          {paused ? "Resume reviews" : "Pause reviews"}
-        </button>
-      </div>
       <div
         id="review-marquee-rows"
         className="review-marquee-rows relative flex w-full flex-col gap-2"
@@ -80,7 +62,6 @@ export default function TestimonialMarquee({
             key={index}
             reverse={index === 1}
             pauseOnHover
-            paused={paused}
             aria-label={`Client reviews, row ${index + 1}. Focus to browse with the arrow keys.`}
           >
             {row.map((review) => (
