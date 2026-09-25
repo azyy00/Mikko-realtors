@@ -413,7 +413,7 @@ export default function LiveMap({
             className={`min-h-11 px-3.5 py-1.5 text-xs font-semibold capitalize transition-colors ${
               basemap === b
                 ? "bg-navy-950 text-white"
-                : "text-navy-800 hover:bg-cream"
+                : "text-navy-800 underline-offset-4 hover:underline"
             }`}
           >
             {b}

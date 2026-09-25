@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --bg: #fdfbf7;
+  --bg: #ffffff;
   --ink: #172623;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --motion-fast: 160ms;
@@ -114,12 +114,12 @@ input.search-input:focus-visible {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #e9e0cf;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
   background: #c9a56a;
   border-radius: 999px;
-  border: 2px solid #e9e0cf;
+  border: 2px solid var(--bg);
 }
 
 @layer components {

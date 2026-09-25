@@ -6,9 +6,9 @@ const config: Config = {
     extend: {
       colors: {
         // shadcn-compatible semantic aliases reuse the existing brand palette.
-        background: "#f4efe5",
+        background: "#ffffff",
         foreground: "#172623",
-        card: { DEFAULT: "#fdfbf7", foreground: "#172623" },
+        card: { DEFAULT: "#ffffff", foreground: "#172623" },
         border: "rgba(16, 34, 56, 0.12)",
         "muted-foreground": "#59665e",
         // Midnight blue with a subtle desert-teal undertone.
@@ -40,8 +40,9 @@ const config: Config = {
           500: "#597c4f",
           600: "#43643f",
         },
-        cream: "#f4efe5",
-        paper: "#fdfbf7",
+        // Legacy surface names stay compatible; all light surfaces are white.
+        cream: "#ffffff",
+        paper: "#ffffff",
         ink: "#172623",
         muted: "#59665e",
       },

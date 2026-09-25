@@ -4,7 +4,7 @@
   --search-line: #dce1df;
   padding: 5rem 0 3rem;
   color: var(--search-ink);
-  background: #f7f7f2;
+  background: var(--bg);
 }
 
 .searchPage {
@@ -77,7 +77,9 @@
 }
 
 .advisor:hover {
-  background: #eeefea;
+  background: var(--bg);
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
 }
 
 .portrait {
@@ -125,7 +127,7 @@
   margin-bottom: 1.5rem;
   padding: 0.75rem 1rem;
   border-left: 2px solid #a4b199;
-  background: #eef2e9;
+  background: var(--bg);
   font-size: 0.875rem;
   line-height: 1.7;
 }
@@ -161,7 +163,7 @@
   height: 2.75rem;
   place-items: center;
   border-radius: 0.5rem;
-  background: #eef1eb;
+  background: var(--bg);
   color: #43643f;
 }
 
@@ -205,7 +207,8 @@
 }
 
 .expandButton:hover {
-  background: #f2f4ef;
+  background: var(--bg);
+  border-color: var(--search-ink);
 }
 
 .externalLink,
@@ -251,7 +254,7 @@
   gap: 1.5rem;
   padding: 2rem;
   text-align: center;
-  background: #f4f6f0;
+  background: var(--bg);
 }
 
 .placeholder p {
@@ -301,7 +304,7 @@
 .error {
   padding: 0.75rem 1.4rem;
   font-size: 0.875rem;
-  background: #f7f0e1;
+  background: var(--bg);
 }
 
 .mobileHint {
@@ -390,7 +393,7 @@
     display: block;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--search-line);
-    background: #f5f7f2;
+    background: var(--bg);
     font-size: 0.75rem;
     line-height: 1.65;
     color: var(--search-muted);

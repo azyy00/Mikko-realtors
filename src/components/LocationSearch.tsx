@@ -197,7 +197,7 @@ export default function LocationSearch({
               aria-selected={active === index}
               onPointerDown={(event) => event.preventDefault()}
               onClick={() => select(suggestion)}
-              className={`cursor-pointer px-4 py-3 text-left hover:bg-cream ${active === index ? "bg-cream" : ""}`}
+              className={`cursor-pointer bg-white px-4 py-3 text-left underline-offset-4 hover:underline ${active === index ? "font-semibold underline" : ""}`}
             >
               <span className="block truncate text-sm font-medium text-ink">
                 {suggestion.name}
