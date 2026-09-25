@@ -85,8 +85,8 @@ export default function Hero() {
 
       {/* Scroll cue */}
       <a
-        href="#listings"
-        aria-label="Scroll to listings"
+        href="#search"
+        aria-label="Scroll to MLS property search"
         className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-white/60"
       >
         <CaretDown size={26} />

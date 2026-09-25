@@ -4,7 +4,6 @@ import StructuredData from "@/components/StructuredData";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import LocalConnections from "@/components/LocalConnections";
-import FeaturedListings from "@/components/FeaturedListings";
 import PropertySearch from "@/components/PropertySearch";
 import JustSold from "@/components/JustSold";
 import About from "@/components/About";
@@ -22,7 +21,6 @@ export default function Home() {
         <Hero />
         <Marquee />
         <LocalConnections />
-        <FeaturedListings />
         <PropertySearch />
         <JustSold />
         <About />

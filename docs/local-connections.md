@@ -2,7 +2,7 @@
 
 ## Implementation and content
 
-`src/components/LocalConnections.tsx` adds a server-rendered “Community & local spots” section after the homepage marquee and before featured listings. The Las Vegas navigation and footer columns link to `/#local-connections`.
+`src/components/LocalConnections.tsx` adds a server-rendered “Community & local spots” section after the homepage marquee and before the MLS search. The Las Vegas navigation and footer columns link to `/#local-connections`. The sample featured-listings section has been removed from the homepage; the hero scroll cue now points to the live MLS search.
 
 The two destinations retain the user-supplied URLs:
 
