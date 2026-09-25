@@ -182,6 +182,7 @@ export type Community = {
   slug: string;
   blurb: string;
   seed: string;
+  image?: string;
   span: "wide" | "tall" | "std";
   priceNote: string;
   intro: string;
@@ -194,6 +195,7 @@ export const communities: Community[] = [
     slug: "summerlin",
     blurb: "Master-planned luxury living",
     seed: "summerlin-lv",
+    image: "/communities/summerlin.jpg",
     span: "wide",
     priceNote: "Homes from the $500s to $2M+",
     intro:
@@ -209,6 +211,7 @@ export const communities: Community[] = [
     slug: "henderson",
     blurb: "Family-friendly & top schools",
     seed: "henderson-nv",
+    image: "/communities/henderson.jpg",
     span: "std",
     priceNote: "Homes from the $400s to $1M+",
     intro:
@@ -224,6 +227,7 @@ export const communities: Community[] = [
     slug: "southwest",
     blurb: "Modern homes near the 215",
     seed: "southwest-lv",
+    image: "/communities/southwest.jpg",
     span: "std",
     priceNote: "Homes from the $450s to $1.5M",
     intro:

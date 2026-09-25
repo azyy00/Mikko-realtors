@@ -12,6 +12,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import { communities, getCommunity } from "@/lib/data";
+import type { Community } from "@/lib/data";
 
 export function generateStaticParams() {
   return communities.map((c) => ({ slug: c.slug }));
@@ -30,8 +31,8 @@ export async function generateMetadata({
   return { title, description, openGraph: { title, description } };
 }
 
-function hero(seed: string) {
-  return `https://picsum.photos/seed/${seed}/1800/1000`;
+function communityImage(community: Community) {
+  return community.image ?? `https://picsum.photos/seed/${community.seed}/1800/1000`;
 }
 
 export default async function CommunityPage({
@@ -52,7 +53,7 @@ export default async function CommunityPage({
         <section className="relative flex min-h-[62vh] items-end overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${hero(c.seed)})` }}
+            style={{ backgroundImage: `url(${communityImage(c)})` }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/70 to-navy-950/40" />
           <div className="container-x relative pb-14 pt-32 text-white">
@@ -134,7 +135,7 @@ export default async function CommunityPage({
                 >
                   <div
                     className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                    style={{ backgroundImage: `url(${hero(o.seed)})` }}
+                    style={{ backgroundImage: `url(${communityImage(o)})` }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy-950/85 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
