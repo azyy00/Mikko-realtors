@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import StructuredData from "@/components/StructuredData";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
+import LocalConnections from "@/components/LocalConnections";
 import FeaturedListings from "@/components/FeaturedListings";
 import PropertySearch from "@/components/PropertySearch";
 import JustSold from "@/components/JustSold";
@@ -20,6 +21,7 @@ export default function Home() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <Marquee />
+        <LocalConnections />
         <FeaturedListings />
         <PropertySearch />
         <JustSold />

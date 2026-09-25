@@ -40,6 +40,7 @@ export const nav: NavItem[] = [
   {
     label: "Las Vegas",
     children: [
+      { label: "Community & Local Spots", href: "/#local-connections" },
       { label: "Summerlin", href: "/communities/summerlin" },
       { label: "Henderson", href: "/communities/henderson" },
       { label: "Southwest Las Vegas", href: "/communities/southwest" },

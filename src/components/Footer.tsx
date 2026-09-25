@@ -23,6 +23,7 @@ const columns = [
   {
     title: "Las Vegas",
     links: [
+      { label: "Community & Local Spots", href: "/#local-connections" },
       { label: "Summerlin", href: "/communities/summerlin" },
       { label: "Henderson", href: "/communities/henderson" },
       { label: "Southwest", href: "/communities/southwest" },
