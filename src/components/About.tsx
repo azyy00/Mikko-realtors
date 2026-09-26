@@ -14,20 +14,19 @@ const specialties = [
 
 export default function About() {
   return (
-    <section id="about" className="bg-paper py-24">
+    <section id="about" className="bg-paper py-14 sm:py-16">
       <div className="container-x">
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 xl:gap-20">
           {/* Portrait */}
           <Reveal>
-            <div className="relative mx-auto max-w-md">
-              <div className="absolute -inset-3 -z-10 rounded-xl3 bg-gradient-to-br from-gold-400/30 to-navy-900/10" />
-              <div className="absolute -bottom-4 -right-4 -z-10 h-40 w-40 rounded-xl2 border border-gold-400/40" />
-              <div className="overflow-hidden rounded-xl3 border border-navy-900/10 shadow-soft">
+            <div className="mx-auto max-w-md lg:mx-0">
+              <div className="overflow-hidden rounded-xl3 shadow-soft">
                 <Image
                   src="/profile/mikko.png"
                   alt="Mikko Lucernas, Las Vegas REALTOR®"
                   width={1082}
                   height={1442}
+                  sizes="(min-width: 1280px) 448px, (min-width: 1024px) 40vw, (min-width: 640px) 448px, 92vw"
                   className="h-auto w-full"
                   priority
                 />
@@ -36,16 +35,37 @@ export default function About() {
           </Reveal>
 
           {/* Copy */}
-          <Reveal delay={0.1}>
-            <h2 className="display text-4xl text-ink sm:text-5xl">
-              {agent.name}
-            </h2>
-            <p className="mt-2 text-sm font-semibold uppercase tracking-wider text-gold-600">
-              {agent.focus}
-            </p>
+          <Reveal delay={0.1} className="min-w-0">
+            <div className="max-w-xl">
+              <h2 className="display border-b border-navy-900/15 pb-3 text-4xl text-ink sm:text-6xl">
+                {agent.name}
+              </h2>
+              <div className="mt-2 space-y-1">
+                <p className="text-base font-semibold leading-relaxed text-gold-600">
+                  Pinoy | Army Veteran
+                </p>
+                <p className="text-base font-semibold text-ink">
+                  Las Vegas REALTOR®
+                </p>
+                <p className="text-sm font-semibold leading-relaxed text-ink">
+                  <span className="sr-only">License </span>S.197749
+                </p>
+                <p className="text-sm leading-relaxed text-muted">
+                  REAL Broker, LLC
+                </p>
+              </div>
+              <div className="mt-4 space-y-1">
+                <p className="text-base font-semibold leading-relaxed text-gold-600">
+                  New Construction | Relocation
+                </p>
+                <p className="text-sm leading-relaxed text-muted">
+                  Military &amp; Veterans Specialist
+                </p>
+              </div>
+            </div>
 
-            <div className="mt-6 flex gap-3 text-muted">
-              <Quotes size={28} weight="fill" className="shrink-0 text-gold-400" />
+            <div className="mt-3 flex gap-3 text-muted">
+              <Quotes size={24} weight="fill" aria-hidden="true" className="mt-1 shrink-0 text-gold-400" />
               <p className="text-lg leading-relaxed">
                 My job isn&apos;t to sell you a house, it&apos;s to make sure the
                 one you buy is the right one. I grew up around hard-working
@@ -76,9 +96,6 @@ export default function About() {
               <a href="#contact" className="btn-gold">
                 Work with Mikko
               </a>
-              <span className="text-sm text-muted">
-                {agent.license} · {agent.brokerage}
-              </span>
             </div>
           </Reveal>
         </div>
