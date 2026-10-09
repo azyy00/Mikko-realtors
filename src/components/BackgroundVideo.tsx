@@ -5,9 +5,11 @@ import { useEffect, useRef, useState } from "react";
 /** Delay below-fold media; pause offscreen and honor reduced motion. */
 export default function BackgroundVideo({
   src,
+  poster,
   eager = false,
 }: {
   src: string;
+  poster?: string;
   eager?: boolean;
 }) {
   const root = useRef<HTMLDivElement>(null);
@@ -35,7 +37,9 @@ export default function BackgroundVideo({
     if (!element) return;
     function sync() {
       if (visible && !reduce && !document.hidden)
-        void element!.play();
+        void element!.play().catch(() => {
+          // Keep the poster visible when the browser blocks autoplay.
+        });
       else element!.pause();
     }
     sync();
@@ -48,6 +52,7 @@ export default function BackgroundVideo({
         <video
           ref={video}
           src={src}
+          poster={poster}
           muted
           loop
           playsInline

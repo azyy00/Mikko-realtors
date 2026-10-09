@@ -1,0 +1,20 @@
+# Local credentials and tooling are never deployment inputs.
+.env*
+.aws
+.agents
+.codex
+.claude
+.git
+.impeccable
+node_modules
+.next
+output
+*.bundle
+*.pem
+*.log
+tsconfig.tsbuildinfo
+
+# Original media and local backups; the homepage streams from Vercel Blob.
+Asssets
+public/videos/mikko-intro.mp4
+profile.png

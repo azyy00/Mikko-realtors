@@ -5,20 +5,27 @@ import Link from "next/link";
 import { List, X, Phone, CaretDown } from "@phosphor-icons/react";
 import { usePathname } from "next/navigation";
 import { nav, agent } from "@/lib/data";
+import { usePageScrolled } from "@/lib/usePageScrolled";
 
-export default function Nav({ solid = false }: { solid?: boolean }) {
+export default function Nav({
+  solid = false,
+  revealAfterScroll = false,
+}: {
+  solid?: boolean;
+  revealAfterScroll?: boolean;
+}) {
   const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
+  const scrolled = usePageScrolled();
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    if (revealAfterScroll && !scrolled) {
+      setOpen(false);
+      setOpenGroup(null);
+    }
+  }, [revealAfterScroll, scrolled]);
 
   useEffect(() => {
     function dismiss(event: PointerEvent) {
@@ -59,7 +66,7 @@ export default function Nav({ solid = false }: { solid?: boolean }) {
           setOpen(false);
         }
       }}
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${revealAfterScroll && !scrolled ? "invisible pointer-events-none" : "visible"} ${
         dark
           ? "bg-navy-950/90 backdrop-blur-md border-b border-white/10"
           : "bg-transparent"

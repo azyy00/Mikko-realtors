@@ -56,7 +56,6 @@ export default function LocalConnections() {
             There&apos;s more to settling in than finding a home. Connect with a
             community and discover a place to eat.
           </p>
-          <p className="mt-4 text-sm text-muted">External links open in a new tab.</p>
         </div>
 
         <ul className="mt-10 grid grid-cols-1 gap-y-8 divide-y divide-navy-900/15 lg:mt-12 lg:grid-cols-3 lg:gap-x-10 lg:divide-y-0">

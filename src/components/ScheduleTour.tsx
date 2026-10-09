@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { usePageScrolled } from "@/lib/usePageScrolled";
 import {
   CalendarBlank,
   X,
@@ -19,9 +21,15 @@ const options = [
 ];
 
 export default function ScheduleTour() {
+  const pathname = usePathname();
+  const scrolled = usePageScrolled();
+  const hiddenForIntro = pathname === "/" && !scrolled;
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (hiddenForIntro) setOpen(false);
+  }, [hiddenForIntro]);
   useEffect(() => {
     if (!open) return;
     function dismiss(event: PointerEvent) {
@@ -47,7 +55,7 @@ export default function ScheduleTour() {
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
       }}
-      className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 print:hidden"
+      className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 print:hidden ${hiddenForIntro ? "invisible pointer-events-none" : "visible"}`}
     >
       {open && (
         <div
