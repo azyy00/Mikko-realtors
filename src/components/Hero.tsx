@@ -19,12 +19,12 @@ const trust = [
 export default function Hero() {
   return (
     <>
-      <section id="top" aria-label="Mikko's introduction" className="relative h-[100dvh] overflow-hidden bg-navy-950">
+      <section id="top" aria-label="Mikko's introduction" className="relative aspect-video overflow-hidden bg-navy-950 lg:aspect-auto lg:h-[100svh]">
         <HeroVideo />
       </section>
 
       {/* Keep the headline and copy in the initial HTML, below the video. */}
-      <section id="home-introduction" aria-labelledby="home-heading" className="bg-paper py-20 sm:py-24">
+      <section id="home-introduction" aria-labelledby="home-heading" className="bg-paper py-8 sm:py-12 lg:py-24">
       <div className="container-x">
         <div className="max-w-2xl">
           <h1 id="home-heading" className="display text-balance text-5xl text-ink sm:text-6xl lg:text-7xl">

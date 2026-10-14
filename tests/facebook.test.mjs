@@ -26,6 +26,21 @@ function load(file, dependencies = {}, env = {}, fetcher = globalThis.fetch) {
 }
 
 const posts = load("src/lib/facebook-posts.ts");
+test("blog feed contains only Facebook posts and never substitutes samples", async () => {
+  const live = [{ slug: "facebook-12345_67890" }];
+  const feed = load("src/lib/blog-feed.ts", {
+    "server-only": {},
+    "./facebook": {
+      getFacebookPosts: async () => live,
+      getFacebookPost: async slug => live.find(post => post.slug === slug) || null,
+    },
+  });
+  assert.equal(await feed.getBlogPosts(), live);
+  assert.equal(await feed.getBlogPost(live[0].slug), live[0]);
+  assert.equal(await feed.getBlogPost("3-things-summerlin-buyers-should-know"), null);
+  live.length = 0;
+  assert.equal((await feed.getBlogPosts()).length, 0);
+});
 const security = load("src/lib/facebook-security.ts", { "node:crypto": crypto });
 const pageId = "12345";
 const published = {
@@ -81,6 +96,43 @@ test("photo-only updates retain the real image without invented article text", (
   assert.equal(post.coverImage, published.full_picture);
   assert.equal(post.title, "A new update from Mikko");
   assert.equal(posts.toFacebookBlogPost({ ...published, message: "", full_picture: null }, pageId), null);
+});
+
+test("video attachments identify Reels and use the actual video ID, not the post ID", () => {
+  const post = posts.toFacebookBlogPost({
+    ...published, status_type: "added_video",
+    permalink_url: "https://www.facebook.com/reel/24680/",
+    attachments: { data: [{ media_type: "video", type: "video_inline", target: { id: "24680" } }] },
+  }, pageId);
+  assert.equal(post.source.isVideo, true);
+  assert.equal(post.source.videoUrl, "https://www.facebook.com/video.php?v=24680");
+  assert.equal(post.source.url, "https://www.facebook.com/reel/24680/");
+});
+
+test("album videos are detected but photos are never turned into players", () => {
+  const post = posts.toFacebookBlogPost({
+    ...published, status_type: "added_photos",
+    attachments: { data: [{ type: "album", subattachments: { data: [
+      { media_type: "photo", target: { id: "111" } },
+      { media_type: "video", target: { id: "222" } },
+    ] } }] },
+  }, pageId);
+  assert.equal(post.source.videoUrl, "https://www.facebook.com/video.php?v=222");
+  const photo = posts.toFacebookBlogPost({ ...published,
+    attachments: { data: [{ media_type: "photo", target: { id: "111" } }] },
+  }, pageId);
+  assert.equal(photo.source.isVideo, false);
+  assert.equal(photo.source.videoUrl, undefined);
+});
+
+test("unsafe video targets are rejected and legacy video posts retain a safe fallback", () => {
+  const post = posts.toFacebookBlogPost({ ...published, status_type: "added_video",
+    attachments: { data: [{ media_type: "video", target: { id: "bad&token=secret" }, url: "https://facebook.com.evil.example/video" }] },
+  }, pageId);
+  assert.equal(post.source.videoUrl, published.permalink_url);
+  assert.equal(posts.toFacebookBlogPost({ ...published, is_hidden: true,
+    attachments: { data: [{ media_type: "video", target: { id: "222" } }] },
+  }, pageId), null);
 });
 
 test("webhook signatures cover exact UTF-8 bytes and reject tampering", () => {
@@ -167,7 +219,9 @@ test("feed fetch keeps credentials on the server, deduplicates, and uses bounded
     called = true;
     assert.equal(url.origin, "https://graph.facebook.com");
     assert.equal(url.pathname, "/v26.0/12345/feed");
+    assert.equal(url.searchParams.get("limit"), "5");
     assert.equal(url.searchParams.has("access_token"), false);
+    assert.ok(url.searchParams.get("fields").includes("attachments{"));
     assert.equal(options.headers.Authorization, "Bearer test-page-token");
     assert.equal(options.next.revalidate, 300);
     assert.equal(options.next.tags[0], "facebook-posts");
@@ -179,7 +233,7 @@ test("feed fetch keeps credentials on the server, deduplicates, and uses bounded
   assert.equal(JSON.stringify(result).includes("test-page-token"), false);
 });
 
-test("an unconfigured site makes no Graph requests and an outage preserves local-blog fallback", async () => {
+test("an unconfigured site makes no Graph requests and an outage returns an empty feed", async () => {
   let called = false;
   const disabled = graph(async () => { called = true; throw new Error("unexpected"); }, {});
   assert.equal((await disabled.getFacebookPosts()).length, 0);

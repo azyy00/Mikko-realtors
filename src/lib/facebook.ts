@@ -8,6 +8,7 @@ const FIELDS = [
   "id", "from{id}", "message", "created_time", "permalink_url",
   "full_picture", "status_type", "is_published", "is_hidden", "is_expired",
   "privacy", "targeting",
+  "attachments{media_type,type,url,target,subattachments{media_type,type,url,target}}",
 ].join(",");
 
 function configuration() {
@@ -23,7 +24,9 @@ function configuration() {
 async function graphRead(path: string, config: NonNullable<ReturnType<typeof configuration>>) {
   const url = new URL("https://graph.facebook.com/" + config.version + "/" + path);
   url.searchParams.set("fields", FIELDS);
-  if (path.endsWith("/feed")) url.searchParams.set("limit", "100");
+  // Keep attachment-heavy feed reads within the request timeout. Larger batches
+  // fail for this Page; older article URLs still fetch their individual post.
+  if (path.endsWith("/feed")) url.searchParams.set("limit", "5");
   url.searchParams.set("appsecret_proof", createHmac("sha256", config.secret).update(config.token).digest("hex"));
   const response = await fetch(url, {
     headers: { Authorization: "Bearer " + config.token },

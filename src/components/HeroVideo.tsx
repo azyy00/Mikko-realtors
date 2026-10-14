@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { SpeakerSlash } from "@phosphor-icons/react";
+import { useEffect, useRef } from "react";
 
-/** Full-volume introduction at the top; fade to silence as its section leaves. */
+/** Inline mobile intro; desktop audio fades as its full-screen section leaves. */
 export default function HeroVideo() {
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const enableSound = useRef<() => void>(() => {});
-  const [soundOn, setSoundOn] = useState(false);
 
   useEffect(() => {
     const player = video.current;
@@ -16,6 +14,8 @@ export default function HeroVideo() {
     if (!player || !container) return;
 
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    // Keep this breakpoint aligned with the hero's lg full-screen layout.
+    const desktop = matchMedia("(min-width: 1024px)");
     let disposed = false;
     let blocked = false;
     let manuallyStarted = false;
@@ -25,21 +25,20 @@ export default function HeroVideo() {
     let graph: { context: AudioContext; gain: GainNode } | null = null;
 
     // Some mobile browsers leave native media volume under hardware control.
-    // On those browsers, the explicit sound gesture enables a Web Audio gain.
+    // Keep desktop playback muted there when a scroll fade cannot be applied.
     player.volume = 0.5;
     const nativeVolumeSupported = Math.abs(player.volume - 0.5) < 0.01;
     player.volume = 1;
-
-    function updateSoundState(enabled: boolean) {
-      setSoundOn(enabled);
-    }
 
     function updateVolume() {
       const bounds = container!.getBoundingClientRect();
       const remaining = bounds.height > 0
         ? Math.max(0, Math.min(1, bounds.bottom / bounds.height))
         : 0;
-      const level = !blocked && !document.hidden ? remaining : 0;
+      const inView = bounds.bottom > 0 && bounds.top < window.innerHeight;
+      const level = !blocked && !document.hidden && inView
+        ? (desktop.matches ? remaining : 1)
+        : 0;
       if (graph) {
         const now = graph.context.currentTime;
         graph.gain.gain.cancelScheduledValues(now);
@@ -49,7 +48,7 @@ export default function HeroVideo() {
       } else {
         player!.volume = level;
       }
-      return bounds.bottom > 0 && bounds.top < window.innerHeight;
+      return inView;
     }
 
     function syncPlayback() {
@@ -59,17 +58,13 @@ export default function HeroVideo() {
         player!.pause();
         return;
       }
-      player!.muted = blocked || (!nativeVolumeSupported && !graph);
-      void player!.play().then(() => {
-        if (disposed || request !== playRequest) return;
-        updateSoundState(!player!.muted && (!graph || graph.context.state === "running"));
-      }).catch((error: DOMException) => {
+      player!.muted = blocked || (desktop.matches && !nativeVolumeSupported && !graph);
+      void player!.play().catch((error: DOMException) => {
         if (disposed || request !== playRequest || error.name === "AbortError") return;
-        // Respect autoplay policy: keep the video moving silently until a tap.
+        // Respect autoplay policy until the visitor activates the video.
         blocked = true;
         player!.muted = true;
         updateVolume();
-        updateSoundState(false);
         void player!.play().catch(() => {});
       });
     }
@@ -96,21 +91,18 @@ export default function HeroVideo() {
           gain.connect(context.destination);
           graph = { context, gain };
         } catch {
-          // Native volume remains the fallback if Web Audio is unavailable.
+          // Keep native volume as the fallback where Web Audio is unavailable.
         }
       }
       if (graph) {
-        void graph.context.resume().then(() => {
-          if (!disposed && !player.muted) updateSoundState(true);
-        }).catch(() => {
+        void graph.context.resume().catch(() => {
           if (disposed) return;
           blocked = true;
           player.muted = true;
           updateVolume();
-          updateSoundState(false);
         });
       }
-      // Both resume() and play() are requested inside the user's click gesture.
+      // Request both audio and playback within the trusted tap/click gesture.
       syncPlayback();
     };
 
@@ -119,6 +111,7 @@ export default function HeroVideo() {
     window.addEventListener("resize", onScroll);
     document.addEventListener("visibilitychange", syncPlayback);
     motion.addEventListener("change", syncPlayback);
+    desktop.addEventListener("change", syncPlayback);
     return () => {
       disposed = true;
       ++playRequest;
@@ -127,6 +120,7 @@ export default function HeroVideo() {
       window.removeEventListener("resize", onScroll);
       document.removeEventListener("visibilitychange", syncPlayback);
       motion.removeEventListener("change", syncPlayback);
+      desktop.removeEventListener("change", syncPlayback);
       player.pause();
       player.muted = true;
       if (graph) void graph.context.close().catch(() => {});
@@ -135,7 +129,20 @@ export default function HeroVideo() {
   }, []);
 
   return (
-    <div ref={root} className="absolute inset-0 bg-navy-950">
+    <div
+      ref={root}
+      role="button"
+      tabIndex={0}
+      aria-label="Play introduction with sound"
+      onClick={() => enableSound.current()}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          if (!event.repeat) enableSound.current();
+        }
+      }}
+      className="absolute inset-0 cursor-pointer touch-manipulation bg-navy-950 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
+    >
       <video
         ref={video}
         crossOrigin="anonymous"
@@ -146,16 +153,8 @@ export default function HeroVideo() {
         playsInline
         preload="auto"
         aria-hidden="true"
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain lg:object-cover [@media(max-aspect-ratio:4/3)]:object-contain"
       />
-      {!soundOn ? <button
-        type="button"
-        onClick={() => enableSound.current()}
-        className="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-4 z-10 inline-flex min-h-11 items-center gap-2 rounded-full bg-navy-950/90 px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-900 sm:left-8"
-      >
-        <SpeakerSlash size={18} aria-hidden="true" />
-        Enable sound
-      </button> : null}
     </div>
   );
 }

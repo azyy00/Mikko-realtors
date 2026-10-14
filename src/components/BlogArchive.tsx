@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { CaretDown } from "@phosphor-icons/react";
-import Reveal from "./Reveal";
 import BlogCard from "./BlogCard";
 import { type BlogPost } from "@/lib/blog";
 
 export default function BlogArchive({
   posts,
-  // featured (1) + a full row of 3 below
-  initial = 4,
+  initial = 6,
 }: {
   posts: BlogPost[];
   initial?: number;
@@ -17,20 +15,14 @@ export default function BlogArchive({
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? posts : posts.slice(0, initial);
   const hidden = posts.length - initial;
-  const [featured, ...others] = visible;
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-3">
-        {featured && (
-          <Reveal className="lg:col-span-3">
-            <BlogCard post={featured} featured />
-          </Reveal>
-        )}
-        {others.map((post, i) => (
-          <Reveal key={post.slug} delay={(i % 3) * 0.06}>
+      <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        {visible.map((post) => (
+          <div key={post.slug} className="min-w-0">
             <BlogCard post={post} />
-          </Reveal>
+          </div>
         ))}
       </div>
 

@@ -24,7 +24,7 @@ export default async function BlogTeaser() {
           </Link>
         </Reveal>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, i) => (
             <Reveal key={post.slug} delay={i * 0.06}>
               <BlogCard post={post} />

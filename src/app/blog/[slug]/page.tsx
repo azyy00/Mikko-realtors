@@ -4,11 +4,13 @@ import Link from "next/link";
 import { CaretRight, ArrowRight, ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { blogPosts, formatDate } from "@/lib/blog";
+import FacebookVideo from "@/components/FacebookVideo";
+import { formatDate } from "@/lib/blog";
 import { getBlogPost } from "@/lib/blog-feed";
 
 export function generateStaticParams() {
-  return blogPosts.map((p) => ({ slug: p.slug }));
+  // Facebook articles are generated on demand; no sample routes are prebuilt.
+  return [];
 }
 
 export async function generateMetadata({
@@ -42,7 +44,7 @@ export default async function BlogArticle({
         <article className="bg-paper pb-16 pt-28">
           <div className="container-x">
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-1.5 text-xs text-muted">
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-xs text-muted">
               <Link href="/" className="hover:text-gold-600">
                 Home
               </Link>
@@ -54,57 +56,73 @@ export default async function BlogArticle({
               <span className="text-navy-900">{post.category}</span>
             </nav>
 
-            {/* Side by side: media on the left, the post content on the right */}
-            <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-12">
-              {/* LEFT: media (video or image) */}
-              <div className="lg:sticky lg:top-24">
-                <div className="overflow-hidden rounded-xl2 border border-navy-900/10 shadow-soft">
-                  {post.youTubeId ? (
-                    <div className="relative aspect-video">
+            {/* Title first on mobile; a bounded portrait player beside the copy on desktop. */}
+            <div className="mt-8 grid gap-y-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:items-start lg:gap-x-12">
+              <header className="min-w-0 lg:col-start-2 lg:row-start-1">
+                <h1 className="display break-words text-3xl text-ink sm:text-4xl">
+                  {post.title}
+                </h1>
+                <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+                  <time dateTime={post.date}>{formatDate(post.date)}</time>
+                  <span aria-hidden="true">·</span>
+                  <span>{post.category}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{post.readMinutes} min read</span>
+                </div>
+              </header>
+
+              <div className="mx-auto w-full max-w-sm lg:col-start-1 lg:row-span-2 lg:row-start-1">
+                <div className="overflow-hidden rounded-xl2 bg-navy-950">
+                  {post.source?.isVideo ? (
+                    <FacebookVideo
+                      key={post.slug}
+                      url={post.source.videoUrl || post.source.url}
+                      poster={post.coverImage}
+                      title={post.title}
+                    />
+                  ) : post.youTubeId ? (
+                    <div className="relative aspect-[9/16]">
                       <iframe
                         className="absolute inset-0 h-full w-full"
-                        src={`https://www.youtube.com/embed/${post.youTubeId}`}
+                        src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(post.youTubeId)}`}
                         title={post.title}
+                        loading="lazy"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       />
                     </div>
                   ) : post.localVideo ? (
                     <video
-                      className="aspect-video w-full bg-navy-950 object-cover"
+                      className="aspect-[9/16] w-full object-contain"
                       controls
                       playsInline
-                      poster={`https://picsum.photos/seed/${post.coverSeed}/1200/675`}
+                      preload="metadata"
+                      aria-label={post.title}
+                      poster={post.coverImage}
                     >
                       <source src={post.localVideo} type="video/mp4" />
                     </video>
                   ) : (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
-                      src={post.coverImage || `https://picsum.photos/seed/${post.coverSeed}/1200/900`}
+                      src={post.coverImage || `https://picsum.photos/seed/${post.coverSeed}/720/1280`}
                       alt={post.title}
-                      className="aspect-[4/3] w-full object-cover"
+                      className="aspect-[9/16] w-full object-contain"
                     />
                   )}
                 </div>
+                {post.source?.isVideo && (
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    Video not loading?{" "}
+                    <a href={post.source.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-navy-700 underline underline-offset-4 hover:text-gold-600">
+                      Open on Facebook<span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </p>
+                )}
               </div>
 
-              {/* RIGHT: caption / content */}
-              <div className="lg:pt-1">
-                <div className="flex items-center gap-3 text-xs text-muted">
-                  <span className="font-semibold uppercase tracking-wider text-gold-600">
-                    {post.category}
-                  </span>
-                  <span>·</span>
-                  <span>{formatDate(post.date)}</span>
-                  <span>·</span>
-                  <span>{post.readMinutes} min read</span>
-                </div>
-                <h1 className="display mt-3 text-3xl text-ink sm:text-4xl">
-                  {post.title}
-                </h1>
-
-                <div className="mt-6">
+              <div className="min-w-0 lg:col-start-2 lg:row-start-2">
+                <div className="max-w-prose break-words">
                   {post.body.map((p, i) => (
                     <p
                       key={i}

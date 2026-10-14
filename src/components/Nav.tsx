@@ -21,7 +21,7 @@ export default function Nav({
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
-    if (revealAfterScroll && !scrolled) {
+    if (revealAfterScroll && !scrolled && matchMedia("(min-width: 1024px)").matches) {
       setOpen(false);
       setOpenGroup(null);
     }
@@ -66,10 +66,10 @@ export default function Nav({
           setOpen(false);
         }
       }}
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${revealAfterScroll && !scrolled ? "invisible pointer-events-none" : "visible"} ${
+      className={`${revealAfterScroll ? "sticky lg:fixed" : "fixed"} inset-x-0 top-0 z-50 transition-colors duration-300 ${revealAfterScroll && !scrolled ? "lg:invisible lg:pointer-events-none" : "visible"} ${
         dark
           ? "bg-navy-950/90 backdrop-blur-md border-b border-white/10"
-          : "bg-transparent"
+          : revealAfterScroll ? "bg-navy-950 lg:bg-transparent" : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex w-full max-w-[1760px] items-center justify-between px-5 py-4 sm:px-8 lg:px-12">

@@ -24,12 +24,14 @@ export default function ScheduleTour() {
   const pathname = usePathname();
   const scrolled = usePageScrolled();
   const hiddenForIntro = pathname === "/" && !scrolled;
+  // Articles have their own contact CTA; don't cover portrait video controls.
+  const hiddenForArticle = pathname.startsWith("/blog/");
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (hiddenForIntro) setOpen(false);
-  }, [hiddenForIntro]);
+    if (hiddenForIntro || hiddenForArticle) setOpen(false);
+  }, [hiddenForIntro, hiddenForArticle]);
   useEffect(() => {
     if (!open) return;
     function dismiss(event: PointerEvent) {
@@ -55,7 +57,7 @@ export default function ScheduleTour() {
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
       }}
-      className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 print:hidden ${hiddenForIntro ? "invisible pointer-events-none" : "visible"}`}
+      className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 print:hidden ${hiddenForIntro || hiddenForArticle ? "invisible pointer-events-none" : "visible"}`}
     >
       {open && (
         <div

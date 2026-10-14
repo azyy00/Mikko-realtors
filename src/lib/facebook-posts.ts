@@ -31,6 +31,28 @@ function facebookUrl(value: unknown, image = false): string | undefined {
   }
 }
 
+/** Build an embed target from a video ID, never from provider-supplied HTML. */
+function videoFromAttachments(value: unknown, nested = false): string | undefined {
+  const data = record(value)?.data;
+  if (!Array.isArray(data)) return;
+  for (const item of data) {
+    const attachment = record(item);
+    if (!attachment) continue;
+    if (attachment.media_type === "video" ||
+        (typeof attachment.type === "string" && attachment.type.startsWith("video"))) {
+      const id = record(attachment.target)?.id;
+      if (typeof id === "string" && /^\d{1,30}$/.test(id))
+        return "https://www.facebook.com/video.php?v=" + id;
+      const url = facebookUrl(attachment.url);
+      if (url) return url;
+    }
+    if (!nested) {
+      const url = videoFromAttachments(attachment.subattachments, true);
+      if (url) return url;
+    }
+  }
+}
+
 /** Only publish the configured Page's public, visible, published posts. */
 export function toFacebookBlogPost(value: unknown, pageId: string): BlogPost | null {
   const post = record(value);
@@ -52,7 +74,9 @@ export function toFacebookBlogPost(value: unknown, pageId: string): BlogPost | n
   const coverImage = facebookUrl(post.full_picture, true);
   if (!message && !coverImage) return null;
   const sourceUrl = facebookUrl(post.permalink_url) || "https://www.facebook.com/" + post.id;
-  const isVideo = post.status_type === "added_video";
+  const attachmentVideo = videoFromAttachments(post.attachments);
+  const isVideo = post.status_type === "added_video" || !!attachmentVideo;
+  const videoUrl = isVideo ? attachmentVideo || sourceUrl : undefined;
   const headline = message.split(/\r?\n/).find(line => line.trim()) || "A new update from Mikko";
   const title = headline.length > 110 ? headline.slice(0, 107).trimEnd() + "…" : headline;
   const excerpt = message.replace(/\s+/g, " ").slice(0, 200) || "See Mikko’s latest update on Facebook.";
@@ -66,7 +90,7 @@ export function toFacebookBlogPost(value: unknown, pageId: string): BlogPost | n
     readMinutes: Math.max(1, Math.ceil(message.split(/\s+/).length / 200)),
     coverSeed: "",
     coverImage: coverImage || "/profile/mikko.png",
-    source: { platform: "facebook", url: sourceUrl, isVideo },
+    source: { platform: "facebook", url: sourceUrl, isVideo, videoUrl },
     body: message ? message.split(/\n\s*\n/).filter(Boolean) : ["View this update on Mikko’s Facebook Page."],
     cta: "Have a question about this update? Get in touch with Mikko.",
   };

@@ -9,18 +9,31 @@ Instagram/TikTok/YouTube feed. No credentials are included in the repository.
 
 ## What visitors see
 
-- Published, public, visible posts authored by the configured Page are merged
-  into the blog index and homepage teaser, newest first.
+- Published, public, visible posts authored by the configured Page populate
+  the blog index and homepage teaser, newest first.
 - Each entry has a stable `/blog/facebook-PAGE_ID_POST_ID` article URL, the original
   caption, publication date, available cover photo, and a link to the original.
-- Video posts link to the original video on Facebook. Photo-only posts use a
-  neutral title; captions are not expanded into invented articles.
+- Blog previews and article media use portrait **9:16** frames. Images and
+  self-hosted videos use `object-contain` so their edges are not cropped; legacy
+  landscape media is letterboxed, not stretched or re-encoded.
+- Facebook video posts and Reels have an in-article **Play video** control. It
+  loads Facebook's embedded player on demand, using the attachment's video ID
+  (which is different from the feed post ID). The original Facebook link remains
+  available if privacy restrictions, removed content, or browser settings prevent
+  embedding. Facebook controls streaming quality and may require another play
+  gesture; the site does not download or recompress videos.
+- Photo-only posts use a neutral title; captions are not expanded into invented
+  articles. For mixed-media albums, the first recognized video is the article's
+  player; the original-post link exposes the complete album.
 - Private, hidden, expired, unpublished, scheduled, visitor-authored and
   audience-restricted posts are excluded. Unknown public visibility is excluded.
-- Existing editorial/sample blog posts remain in place.
+- Sample articles have been removed. Only Facebook posts appear in the index,
+  homepage teaser, and sitemap; former sample article URLs return not found.
 
 This is a **live mirror**, not a permanent content archive. The index checks the
-latest 100 feed items; filtering and Meta limits can reduce the number shown.
+latest 5 feed items; filtering and Meta limits can reduce the number shown.
+This small batch avoids failures seen with attachment-heavy 100-item requests.
+The index does not currently paginate through older Facebook posts.
 Older article URLs fetch their post by ID. Deleted/unavailable posts are removed
 when Meta's current data is fetched. Photos use Meta CDN URLs, which can expire.
 There is no database, source-file rewriting, or background filesystem storage.
@@ -71,8 +84,8 @@ it is not an instant browser push. An already-open tab needs navigation/refresh.
 
 Without a webhook delivery, reads use a five-minute revalidation interval.
 This is request-driven caching, not a scheduled job. A request may see the prior
-cache value while background revalidation occurs. On provider failures, existing
-local posts remain available; a failed direct article read uses the page error
+cache value while background revalidation occurs. On provider failures,
+no sample posts are substituted; a failed direct article read uses the page error
 state rather than returning a false permanent 404.
 
 Webhook authenticity uses HMAC-SHA256 over the exact request bytes. Unverified
@@ -87,13 +100,15 @@ hosting alone cannot run this integration.
 ## Verification
 
 `npm run test:facebook` checks filtering, signature validation, request limits,
-webhook verification/invalidation, deduplication, credential handling and Graph
+webhook verification/invalidation, video attachment mapping, unsafe media URLs,
+deduplication, credential handling and Graph
 request behavior using fixtures. `npm run build` verifies the Next.js integration.
 Real authorization and end-to-end Meta delivery still require the client's Page.
 
 ## Official references
 
 - [Page feed fields, permissions and limits](https://developers.facebook.com/docs/graph-api/reference/page/feed/)
+- [Facebook embedded video player](https://developers.facebook.com/docs/plugins/embedded-video-player/)
 - [Webhook verification and signature validation](https://developers.facebook.com/docs/graph-api/webhooks/getting-started/)
 - [Page subscriptions and feed notifications](https://developers.facebook.com/docs/graph-api/webhooks/getting-started/webhooks-for-pages/)
 - [Next.js 15 cache invalidation](https://nextjs.org/docs/15/app/api-reference/functions/revalidateTag)
