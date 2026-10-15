@@ -69,14 +69,6 @@ export default function TestimonialMarquee({
             ))}
           </Marquee>
         ))}
-        <div
-          aria-hidden="true"
-          className="review-marquee-fade pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-cream to-transparent sm:w-14"
-        />
-        <div
-          aria-hidden="true"
-          className="review-marquee-fade pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-cream to-transparent sm:w-14"
-        />
       </div>
     </div>
   );

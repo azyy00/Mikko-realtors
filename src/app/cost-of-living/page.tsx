@@ -44,7 +44,7 @@ export default function CostOfLiving() {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url(https://picsum.photos/seed/vegas-cost-living/1800/1000)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/70 to-navy-950/45" />
+          <div className="absolute inset-0 bg-navy-950/70" />
           <div className="container-x relative pb-14 pt-32 text-white">
             <nav className="flex items-center gap-1.5 text-xs text-white/70">
               <Link href="/" className="hover:text-gold-300">

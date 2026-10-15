@@ -58,9 +58,9 @@ export default function HomeValuationForm() {
         ref={successRef}
         tabIndex={-1}
         role="status"
-        className="flex min-h-[360px] flex-col items-center justify-center rounded-xl2 border border-navy-900/10 bg-cream p-8 text-center"
+        className="flex min-h-[360px] flex-col items-center justify-center rounded-xl3 border border-navy-900/10 bg-white p-8 text-center shadow-[0_30px_60px_-36px_rgba(16,34,56,0.45)]"
       >
-        <CheckCircle size={56} weight="fill" className="text-sage-500" />
+        <CheckCircle size={56} weight="fill" className="text-gold-500" />
         <h3 className="mt-4 font-display text-2xl font-semibold text-ink">
           Request received, {form.name.split(" ")[0] || "there"}.
         </h3>
@@ -77,7 +77,7 @@ export default function HomeValuationForm() {
       onSubmit={handleSubmit}
       aria-busy={status === "submitting"}
       noValidate
-      className="rounded-xl2 border border-navy-900/10 bg-cream p-6 sm:p-8"
+      className="rounded-xl3 border border-navy-900/10 bg-white p-6 shadow-[0_30px_60px_-36px_rgba(16,34,56,0.45)] sm:p-9"
     >
       {status === "error" && (
         <p
@@ -100,10 +100,10 @@ export default function HomeValuationForm() {
           <House size={22} weight="fill" />
         </span>
         <div>
-          <h2 className="font-display text-xl font-semibold text-ink">
+          <h2 className="font-display text-2xl font-medium text-ink">
             What&apos;s my home worth?
           </h2>
-          <p className="text-xs text-muted">Free, no obligation.</p>
+          <p className="text-sm text-muted">Free, no obligation.</p>
         </div>
       </div>
 

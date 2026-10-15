@@ -25,7 +25,7 @@ export default function ScheduleTour() {
   const scrolled = usePageScrolled();
   const hiddenForIntro = pathname === "/" && !scrolled;
   // Articles have their own contact CTA; don't cover portrait video controls.
-  const hiddenForArticle = pathname.startsWith("/blog/");
+  const hiddenForArticle = pathname.startsWith("/blog/") || pathname.startsWith("/admin");
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);

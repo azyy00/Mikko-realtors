@@ -92,11 +92,6 @@ export default function About() {
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <a href="#contact" className="btn-gold">
-                Work with Mikko
-              </a>
-            </div>
           </Reveal>
         </div>
       </div>

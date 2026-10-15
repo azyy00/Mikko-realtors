@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Oswald, Inter } from "next/font/google";
 import "./globals.css";
 import ScheduleTour from "@/components/ScheduleTour";
+import VisitTracker from "@/components/VisitTracker";
 
 const display = Oswald({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
         </a>
         {children}
         <ScheduleTour />
+        <VisitTracker />
       </body>
     </html>
   );

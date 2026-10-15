@@ -40,23 +40,71 @@ export default function PropertySearch({
   const [expanded, setExpanded] = useState(false);
   const [expandError, setExpandError] = useState("");
 
+  // Time of the visitor's most recent scroll/tap/key input. The Matrix embed
+  // focuses its own field on load, which makes the browser scroll the whole
+  // page to it; input tells us whether a page move was the visitor's or not.
+  const lastInputRef = useRef(0);
+  useEffect(() => {
+    const mark = () => {
+      lastInputRef.current = performance.now();
+    };
+    const events = ["wheel", "touchstart", "touchmove", "keydown", "pointerdown"] as const;
+    events.forEach((name) => window.addEventListener(name, mark, { passive: true }));
+    return () => events.forEach((name) => window.removeEventListener(name, mark));
+  }, []);
+
   useEffect(() => {
     if (enabled || !containerRef.current || !("IntersectionObserver" in window))
       return;
 
     // The homepage must stay at the hero until visitors reach the search.
+    // During the first paint the layout can briefly report this panel at the
+    // top of the screen, so only load once the visitor has actually scrolled.
+    let intersecting = false;
+    const enableIfReached = () => {
+      if (intersecting && lastInputRef.current > 0 && window.scrollY > 0) {
+        setEnabled(true);
+      }
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setEnabled(true);
-          observer.disconnect();
-        }
+        intersecting = entry.isIntersecting;
+        enableIfReached();
       },
       { threshold: 0.01 },
     );
     observer.observe(containerRef.current);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", enableIfReached, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", enableIfReached);
+    };
   }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled || showFilters) return;
+
+    // Undo page jumps the embed causes on its own (not from visitor input).
+    let anchor = window.scrollY;
+    const onScroll = () => {
+      if (performance.now() - lastInputRef.current < 800) {
+        anchor = window.scrollY;
+        return;
+      }
+      if (Math.abs(window.scrollY - anchor) > 40) {
+        window.scrollTo({ top: anchor, behavior: "instant" });
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const stop = window.setTimeout(
+      () => window.removeEventListener("scroll", onScroll),
+      8000,
+    );
+    return () => {
+      window.clearTimeout(stop);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [enabled, showFilters]);
 
   useEffect(() => {
     setCanExpand(Boolean(document.fullscreenEnabled));
@@ -87,6 +135,36 @@ export default function PropertySearch({
   }
 
   const Heading = showFilters ? "h1" : "h2";
+  const actions = (
+    <div className={styles.actions}>
+      {canExpand && (
+        <button
+          ref={expandButtonRef}
+          type="button"
+          onClick={toggleExpanded}
+          aria-pressed={expanded}
+          className={styles.expandButton}
+        >
+          {expanded ? <ArrowsIn size={17} aria-hidden="true" /> : <ArrowsOut size={17} aria-hidden="true" />}
+          {expanded ? "Exit expanded view" : "Expand search"}
+        </button>
+      )}
+      <a
+        href={MLS_SEARCH_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.externalLink}
+      >
+        Open full search <ArrowSquareOut size={17} aria-hidden="true" />
+        <span className="sr-only">(opens in a new tab)</span>
+      </a>
+    </div>
+  );
+  const statusText = loaded
+    ? "Listings provided by Matrix MLS"
+    : enabled
+      ? "Opening MLS search…"
+      : "MLS homes, all in one place";
   const preference = [initialQuery.trim().slice(0, 120), priceLabels[initialPrice]]
     .filter(Boolean)
     .join(" · ");
@@ -106,17 +184,17 @@ export default function PropertySearch({
           </nav>
         )}
 
-        <div className={styles.introduction}>
-          <div>
-            <Heading id="property-search-heading" className={styles.heading}>
-              Find your place <span>in Las Vegas.</span>
-            </Heading>
-            <p className={styles.description}>
-              A neighborhood you love. Room for what&apos;s next.
-              Explore homes across the valley, on your terms.
-            </p>
-          </div>
-          {showFilters ? (
+        {showFilters && (
+          <div className={styles.introduction}>
+            <div>
+              <Heading id="property-search-heading" className={styles.heading}>
+                Find your place <span>in Las Vegas.</span>
+              </Heading>
+              <p className={styles.description}>
+                A neighborhood you love. Room for what&apos;s next.
+                Explore homes across the valley, on your terms.
+              </p>
+            </div>
             <Link href="/#contact" className={styles.advisor}>
               <Image
                 src="/profile/mikko.png"
@@ -130,12 +208,8 @@ export default function PropertySearch({
                 <span className={styles.advisorName}>Ask Mikko <ArrowRight size={16} aria-hidden="true" /></span>
               </span>
             </Link>
-          ) : (
-            <Link href="/buy" className={styles.browseLink}>
-              Browse all homes <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-          )}
-        </div>
+          </div>
+        )}
 
         {preference && (
           <p className={styles.preference}>
@@ -145,40 +219,30 @@ export default function PropertySearch({
         )}
 
         <div ref={workspaceRef} className={styles.workspace}>
-          <div className={styles.toolbar}>
-            <div className={styles.searchIdentity}>
-              <span className={styles.searchIcon}><Compass size={22} weight="regular" aria-hidden="true" /></span>
+          {showFilters ? (
+            <div className={styles.toolbar}>
+              <div className={styles.searchIdentity}>
+                <span className={styles.searchIcon}><Compass size={22} weight="regular" aria-hidden="true" /></span>
+                <div>
+                  <h2 className={styles.searchTitle}>Explore the valley</h2>
+                  <p role="status" className={styles.status}>{statusText}</p>
+                </div>
+              </div>
+              {actions}
+            </div>
+          ) : (
+            <div className={styles.consoleHead}>
               <div>
-                <h3 className={styles.searchTitle}>Explore the valley</h3>
-                <p role="status" className={styles.status}>
-                  {loaded ? "Listings provided by Matrix MLS" : enabled ? "Opening MLS search…" : "MLS homes, all in one place"}
+                <Heading id="property-search-heading" className={styles.consoleHeading}>
+                  Every home for sale, <span>one search away.</span>
+                </Heading>
+                <p className={styles.consoleText}>
+                  Filter live Las Vegas MLS listings by price, beds, and area.
                 </p>
               </div>
+              {actions}
             </div>
-            <div className={styles.actions}>
-              {canExpand && (
-                <button
-                  ref={expandButtonRef}
-                  type="button"
-                  onClick={toggleExpanded}
-                  aria-pressed={expanded}
-                  className={styles.expandButton}
-                >
-                  {expanded ? <ArrowsIn size={17} aria-hidden="true" /> : <ArrowsOut size={17} aria-hidden="true" />}
-                  {expanded ? "Exit expanded view" : "Expand search"}
-                </button>
-              )}
-              <a
-                href={MLS_SEARCH_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.externalLink}
-              >
-                Open full search <ArrowSquareOut size={17} aria-hidden="true" />
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
-            </div>
-          </div>
+          )}
 
           {expandError && <p role="status" className={styles.error}>{expandError}</p>}
 
@@ -198,7 +262,7 @@ export default function PropertySearch({
                 src={MLS_SEARCH_URL}
                 title="Las Vegas MLS listings — search homes with Mikko Lucernas"
                 width="100%"
-                height="900"
+                height="640"
                 className={styles.frame}
                 onLoad={() => setLoaded(true)}
               />
@@ -213,7 +277,7 @@ export default function PropertySearch({
             )}
           </div>
           <div className={styles.searchFooter}>
-            <span>Las Vegas · Henderson · North Las Vegas</span>
+            <span>{showFilters ? "Las Vegas · Henderson · North Las Vegas" : <span role="status">{statusText}</span>}</span>
             <span>Search not appearing? <a href={MLS_SEARCH_URL} target="_blank" rel="noopener noreferrer">Open in a new tab <span className="sr-only">(opens in a new tab)</span></a></span>
           </div>
         </div>

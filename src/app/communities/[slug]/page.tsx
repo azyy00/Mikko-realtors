@@ -55,7 +55,7 @@ export default async function CommunityPage({
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${communityImage(c)})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/70 to-navy-950/40" />
+          <div className="absolute inset-0 bg-navy-950/70" />
           <div className="container-x relative pb-14 pt-32 text-white">
             <nav className="flex items-center gap-1.5 text-xs text-white/70">
               <Link href="/" className="hover:text-gold-300">
@@ -137,7 +137,7 @@ export default async function CommunityPage({
                     className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                     style={{ backgroundImage: `url(${communityImage(o)})` }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy-950/85 to-transparent" />
+                  <div className="absolute inset-0 bg-navy-950/55" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
                     <div>
                       <h3 className="font-display text-xl font-semibold text-white">

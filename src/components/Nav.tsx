@@ -66,13 +66,11 @@ export default function Nav({
           setOpen(false);
         }
       }}
-      className={`${revealAfterScroll ? "sticky lg:fixed" : "fixed"} inset-x-0 top-0 z-50 transition-colors duration-300 ${revealAfterScroll && !scrolled ? "lg:invisible lg:pointer-events-none" : "visible"} ${
-        dark
-          ? "bg-navy-950/90 backdrop-blur-md border-b border-white/10"
-          : revealAfterScroll ? "bg-navy-950 lg:bg-transparent" : "bg-transparent"
+      className={`${revealAfterScroll ? "sticky lg:fixed" : "fixed"} inset-x-0 top-0 z-50 border-b border-white/10 bg-navy-950 ${
+        revealAfterScroll && !scrolled ? "lg:invisible lg:pointer-events-none" : "visible"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-[1760px] items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
+      <div className="mx-auto grid h-[72px] w-full max-w-[1440px] grid-cols-[auto_1fr_auto] items-center gap-6 px-5 sm:h-20 sm:px-8 lg:px-12">
         {/* Brand */}
         <Link
           href="/#top"
@@ -85,14 +83,14 @@ export default function Nav({
             alt={`${agent.name}, ${agent.title}`}
             width={412}
             height={236}
-            className="h-10 w-auto sm:h-12"
+            className="h-10 w-auto sm:h-11"
           />
         </Link>
 
         {/* Desktop links */}
         <nav
           aria-label="Primary navigation"
-          className="hidden items-center gap-6 text-sm text-white/80 lg:flex"
+          className="hidden items-center justify-center gap-1 text-sm font-medium lg:flex"
         >
           {nav.map((item) =>
             item.children ? (
@@ -103,9 +101,8 @@ export default function Nav({
                   onClick={() =>
                     setOpenGroup((g) => (g === item.label ? null : item.label))
                   }
-                  className={`flex items-center gap-1 py-1 transition-colors hover:text-gold-300 ${
-                    openGroup === item.label ? "text-gold-300" : ""
-                  }`}
+                  data-open={openGroup === item.label || undefined}
+                  className="nav-link flex items-center gap-1"
                 >
                   {item.label}
                   <CaretDown
@@ -123,7 +120,7 @@ export default function Nav({
                     id={`desktop-${item.label.replaceAll(" ", "-")}`}
                     className="absolute left-1/2 top-full -translate-x-1/2 pt-3"
                   >
-                    <div className="popover-enter min-w-[248px] overflow-hidden rounded-2xl border border-white/10 bg-navy-950/95 p-2 shadow-soft backdrop-blur-md">
+                    <div className="popover-enter min-w-[260px] overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-1.5 shadow-[0_24px_48px_-24px_rgba(8,17,28,0.8)]">
                       {item.children.map((c) => (
                         <Link
                           key={c.href}
@@ -132,7 +129,7 @@ export default function Nav({
                             pathname === c.href ? "page" : undefined
                           }
                           onClick={() => setOpenGroup(null)}
-                          className="block rounded-xl px-3 py-2.5 text-sm text-white/80 transition-colors hover:bg-white/5 hover:text-gold-300"
+                          className="block rounded-lg px-3 py-2.5 text-sm text-white/80 no-underline transition-colors hover:bg-white/[0.06] hover:text-white aria-[current=page]:text-gold-300"
                         >
                           {c.label}
                         </Link>
@@ -146,7 +143,7 @@ export default function Nav({
                 key={item.label}
                 href={item.href ?? "/"}
                 aria-current={pathname === item.href ? "page" : undefined}
-                className="py-1 transition-colors hover:text-gold-300"
+                className="nav-link"
               >
                 {item.label}
               </Link>
@@ -155,13 +152,13 @@ export default function Nav({
         </nav>
 
         {/* Desktop CTA */}
-        <Link
-          href="/#contact"
-          className="hidden items-center gap-2 rounded-full border border-gold-400/60 px-5 py-2.5 text-sm font-semibold text-gold-200 transition-colors hover:bg-gold-400 hover:text-navy-950 lg:inline-flex"
+        <a
+          href={agent.phoneHref}
+          className="hidden items-center gap-2 justify-self-end rounded-full bg-gold-400 px-5 py-2.5 text-sm font-semibold text-navy-950 transition-[background-color,transform] duration-150 hover:bg-gold-300 active:scale-[0.97] lg:inline-flex"
         >
           <Phone size={16} weight="fill" />
-          Let&apos;s Talk
-        </Link>
+          {agent.phone}
+        </a>
 
         {/* Mobile toggle */}
         <button
@@ -169,7 +166,7 @@ export default function Nav({
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"
-          className="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden"
+          className="col-start-3 grid h-11 w-11 place-items-center justify-self-end rounded-full border border-white/20 text-white transition-transform active:scale-[0.95] lg:hidden"
         >
           {open ? <X size={18} /> : <List size={18} />}
         </button>
@@ -181,7 +178,7 @@ export default function Nav({
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="max-h-[70vh] overflow-y-auto border-t border-white/10 bg-navy-950 backdrop-blur-md lg:hidden"
+          className="max-h-[70vh] overflow-y-auto border-t border-white/10 bg-navy-950 lg:hidden"
         >
           <div className="mx-auto flex w-full max-w-[1760px] flex-col px-5 py-3 sm:px-8">
             {nav.map((item) =>
@@ -189,7 +186,7 @@ export default function Nav({
                 <div
                   key={item.label}
                   data-nav-group
-                  className="border-b border-white/5"
+                  className="border-b border-white/10"
                 >
                   <button
                     aria-expanded={openGroup === item.label}
@@ -199,7 +196,7 @@ export default function Nav({
                         g === item.label ? null : item.label,
                       )
                     }
-                    className="flex w-full items-center justify-between py-3 text-white/85"
+                    className="flex w-full items-center justify-between py-4 font-display text-xl text-white"
                   >
                     {item.label}
                     <CaretDown
@@ -222,7 +219,7 @@ export default function Nav({
                             key={c.href}
                             href={c.href}
                             onClick={() => setOpen(false)}
-                            className="py-2 text-sm text-white/70"
+                            className="py-2.5 text-[15px] text-white/75"
                           >
                             {c.label}
                           </Link>
@@ -236,19 +233,15 @@ export default function Nav({
                   key={item.label}
                   href={item.href ?? "/"}
                   onClick={() => setOpen(false)}
-                  className="border-b border-white/5 py-3 text-white/85"
+                  className="border-b border-white/10 py-4 font-display text-xl text-white no-underline"
                 >
                   {item.label}
                 </Link>
               ),
             )}
-            <Link
-              href="/#contact"
-              onClick={() => setOpen(false)}
-              className="btn-gold mt-4"
-            >
-              <Phone size={16} weight="fill" /> Let&apos;s Talk
-            </Link>
+            <a href={agent.phoneHref} className="btn-gold mt-4">
+              <Phone size={16} weight="fill" /> Call {agent.phone}
+            </a>
           </div>
         </nav>
       )}

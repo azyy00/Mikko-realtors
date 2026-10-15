@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { LeadPayload } from "@/lib/leads";
+import { db, hasDatabase } from "@/lib/db";
 
 export const runtime = "nodejs";
 
@@ -29,7 +30,7 @@ function isValidLead(value: unknown): value is LeadPayload {
   if (!value || typeof value !== "object") return false;
   const lead = value as Record<string, unknown>;
   return (
-    (lead.form === "contact" || lead.form === "home-valuation") &&
+    (lead.form === "contact" || lead.form === "home-valuation" || lead.form === "guide") &&
     validText(lead.name, 120, true) &&
     typeof lead.email === "string" &&
     lead.email.length <= 254 &&
@@ -38,7 +39,8 @@ function isValidLead(value: unknown): value is LeadPayload {
     validText(lead.message, 2_000) &&
     validText(lead.intent, 80) &&
     validText(lead.address, 250) &&
-    validText(lead.website, 0)
+    validText(lead.website, 0) &&
+    validText(lead.page, 300)
   );
 }
 
@@ -76,12 +78,47 @@ export async function POST(request: NextRequest) {
   if (lead.website) return NextResponse.json({ ok: true });
 
   const webhook = process.env.LEAD_WEBHOOK_URL;
-  if (!webhook) {
+  if (!hasDatabase() && !webhook) {
     return NextResponse.json(
       { error: "Lead delivery is not configured yet. Please call or email Mikko directly." },
       { status: 503 },
     );
   }
+
+  // The database is the record Mikko reviews in /admin; the webhook is an
+  // optional extra notification. A lead counts as received if either works.
+  const [saved, sent] = await Promise.all([
+    hasDatabase() ? saveLead(lead) : Promise.resolve(false),
+    webhook ? sendWebhook(webhook, lead) : Promise.resolve(false),
+  ]);
+  if (!saved && !sent) {
+    return NextResponse.json(
+      { error: "We couldn't send your request. Please call or email Mikko directly." },
+      { status: 502 },
+    );
+  }
+
+  return NextResponse.json({ ok: true });
+}
+
+const clean = (value?: string) => value?.trim() || null;
+
+async function saveLead(lead: LeadPayload) {
+  try {
+    const sql = await db();
+    await sql`
+      INSERT INTO leads (form, name, email, phone, intent, address, message, page)
+      VALUES (${lead.form}, ${lead.name.trim()}, ${lead.email.trim().toLowerCase()},
+        ${clean(lead.phone)}, ${clean(lead.intent)}, ${clean(lead.address)},
+        ${clean(lead.message)}, ${clean(lead.page)})`;
+    return true;
+  } catch (error) {
+    console.error("Lead save failed", error);
+    return false;
+  }
+}
+
+async function sendWebhook(webhook: string, lead: LeadPayload) {
   try {
     const url = new URL(webhook);
     if (url.protocol !== "https:") throw new Error("Lead webhook must use HTTPS");
@@ -96,12 +133,9 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ ...lead, receivedAt: new Date().toISOString() }),
     });
     if (!response.ok) throw new Error(`Webhook returned ${response.status}`);
-  } catch {
-    return NextResponse.json(
-      { error: "We couldn't send your request. Please call or email Mikko directly." },
-      { status: 502 },
-    );
+    return true;
+  } catch (error) {
+    console.error("Lead webhook failed", error);
+    return false;
   }
-
-  return NextResponse.json({ ok: true });
 }

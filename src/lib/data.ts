@@ -6,7 +6,7 @@ export const agent = {
   name: "Mikko Lucernas",
   title: "Las Vegas REALTOR®",
   focus: "New Construction & Relocation Specialist",
-  email: "mikko.realtor@gmail.com",
+  email: "mikko.lucernas@lvpinoyrealtor.com",
   // Real number from Mikko's Google Business Profile
   phone: "(702) 488-1206",
   phoneHref: "tel:+17024881206",
@@ -17,52 +17,27 @@ export const agent = {
 export type NavChild = { label: string; href: string };
 export type NavItem = { label: string; href?: string; children?: NavChild[] };
 
+// Primary menu requested by the client: Home, Search Homes, About, Guides, Contact.
 export const nav: NavItem[] = [
+  { label: "Home", href: "/" },
+  { label: "Search Homes", href: "/buy" },
+  { label: "About", href: "/#about" },
   {
-    label: "Home Buyers",
+    label: "Guides",
     children: [
-      { label: "Search Homes", href: "/buy" },
-      { label: "New Construction", href: "/new-construction" },
+      { label: "All Guides & Checklists", href: "/guides" },
       { label: "First-Time Buyers", href: "/guides/first-time-buyers" },
-      { label: "VA Buyers", href: "/guides/va-loan" },
-      { label: "Relocation to Las Vegas", href: "/guides/relocation" },
-      { label: "Home Buyer Guide", href: "/guides" },
-    ],
-  },
-  {
-    label: "Sellers",
-    children: [
+      { label: "VA & Military Buyers", href: "/guides/va-loan" },
+      { label: "New Construction", href: "/guides/new-construction" },
+      { label: "Relocating to Las Vegas", href: "/guides/relocation" },
+      { label: "Selling Your Home", href: "/guides/sellers" },
       { label: "What's My Home Worth?", href: "/home-valuation" },
-      { label: "Home Selling Guide", href: "/guides/sellers" },
-      { label: "Just Sold", href: "/#sold" },
-    ],
-  },
-  {
-    label: "Las Vegas",
-    children: [
-      { label: "Community & Local Spots", href: "/#local-connections" },
-      { label: "Summerlin", href: "/communities/summerlin" },
-      { label: "Henderson", href: "/communities/henderson" },
-      { label: "Southwest Las Vegas", href: "/communities/southwest" },
-      { label: "Northwest", href: "/communities/northwest" },
-      { label: "North Las Vegas", href: "/communities/north-las-vegas" },
-      { label: "Tule Springs", href: "/communities/tule-springs" },
-      { label: "New Construction Communities", href: "/new-construction" },
-    ],
-  },
-  {
-    label: "Resources",
-    children: [
       { label: "Mortgage Calculator", href: "/resources/mortgage-calculator" },
       { label: "VA Loan Calculator", href: "/resources/va-loan-calculator" },
-      { label: "New Construction Updates", href: "/new-construction" },
-      { label: "California vs Las Vegas", href: "/california-vs-las-vegas" },
-      { label: "Cost of Living", href: "/cost-of-living" },
+      { label: "Mikko's Blog", href: "/blog" },
     ],
   },
-  { label: "About", href: "/#about" },
-  { label: "Blog", href: "/blog" },
-  { label: "Reviews", href: "/#reviews" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export type Listing = {
@@ -518,12 +493,14 @@ export const reviews: Review[] = [
   },
 ];
 
-// Real brand logos supplied by the client (public/icons/*)
+// Real brand logos supplied by the client (public/icons/*).
+// Paste each profile URL into `href`; icons with an empty href are hidden so
+// the footer never links back to the top of the page.
 export const socials = [
-  { label: "Facebook", icon: "/icons/facebook.svg", href: "#" },
-  { label: "Instagram", icon: "/icons/instagram.svg", href: "#" },
-  { label: "TikTok", icon: "/icons/tiktok.svg", href: "#" },
-  { label: "YouTube", icon: "/icons/youtube.png", href: "#" },
+  { label: "Facebook", icon: "/icons/facebook.svg", href: "" },
+  { label: "Instagram", icon: "/icons/instagram.svg", href: "" },
+  { label: "TikTok", icon: "/icons/tiktok.svg", href: "" },
+  { label: "YouTube", icon: "/icons/youtube.png", href: "" },
 ];
 
 export const marketingSteps = [

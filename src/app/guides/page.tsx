@@ -8,6 +8,7 @@ import {
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
+import GuideDownload from "@/components/GuideDownload";
 import { guides, downloadGuides } from "@/lib/guides";
 
 export const metadata: Metadata = {
@@ -30,7 +31,7 @@ export default function GuidesIndex() {
             </h1>
             <p className="subhead mt-4 max-w-2xl">
               Mikko&apos;s own guides for buying, selling, and moving in Las
-              Vegas. Free to download, no jargon, no pressure.
+              Vegas. Free with your name and email, no jargon, no pressure.
             </p>
           </div>
         </section>
@@ -40,9 +41,9 @@ export default function GuidesIndex() {
           <div className="container-x grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-stretch">
             {/* Featured download */}
             <Reveal>
-              <a
-                href={featured.file}
-                download
+              <GuideDownload
+                file={featured.file}
+                title={featured.title}
                 className="group flex h-full flex-col justify-between overflow-hidden rounded-xl3 bg-navy-950 p-8 text-white transition-transform duration-200 hover:-translate-y-0.5 sm:p-10"
               >
                 <div>
@@ -66,16 +67,16 @@ export default function GuidesIndex() {
                   Download PDF
                   <span className="tnum text-navy-950/70">· {featured.size}</span>
                 </span>
-              </a>
+              </GuideDownload>
             </Reveal>
 
             {/* Rest */}
             <div className="grid gap-5 sm:grid-cols-2">
               {rest.map((g, i) => (
                 <Reveal key={g.file} delay={i * 0.05}>
-                  <a
-                    href={g.file}
-                    download
+                  <GuideDownload
+                    file={g.file}
+                    title={g.title}
                     className="group flex h-full flex-col justify-between rounded-xl2 border border-navy-900/10 bg-cream p-6 transition-colors hover:border-gold-400/60"
                   >
                     <div>
@@ -98,7 +99,7 @@ export default function GuidesIndex() {
                       <DownloadSimple size={15} weight="bold" />
                       Download · {g.size}
                     </span>
-                  </a>
+                  </GuideDownload>
                 </Reveal>
               ))}
             </div>

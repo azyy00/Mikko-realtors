@@ -53,7 +53,7 @@ export default function MarketingEngine() {
         <div className="relative mt-14">
           <div
             aria-hidden
-            className="pointer-events-none absolute left-7 top-7 hidden h-[calc(100%-3.5rem)] w-px bg-gradient-to-b from-gold-400/50 to-gold-400/5 sm:block lg:left-0 lg:right-0 lg:top-7 lg:h-px lg:w-auto lg:bg-gradient-to-r lg:from-gold-400/10 lg:via-gold-400/60 lg:to-gold-400/10"
+            className="pointer-events-none absolute left-7 top-7 hidden h-[calc(100%-3.5rem)] w-px bg-gold-400/40 sm:block lg:left-0 lg:right-0 lg:top-7 lg:h-px lg:w-auto"
           />
           <div className="grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
             {marketingSteps.map((s, i) => {

@@ -14,3 +14,7 @@ tsconfig.tsbuildinfo
 /profile.png
 /.impeccable/hook.cache.json
 /*.bundle
+.vercel
+/output
+/.impeccable/review
+/.impeccable/critique

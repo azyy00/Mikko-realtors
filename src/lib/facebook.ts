@@ -1,7 +1,7 @@
 import "server-only";
 import { createHmac } from "node:crypto";
 import { cache } from "react";
-import { FACEBOOK_CACHE_TAG, facebookPostId, toFacebookBlogPost } from "./facebook-posts";
+import { FACEBOOK_CACHE_TAG, facebookPostId, isEducationalPost, toFacebookBlogPost } from "./facebook-posts";
 import type { BlogPost } from "./blog";
 
 const FIELDS = [
@@ -54,7 +54,7 @@ export const getFacebookPosts = cache(async (): Promise<BlogPost[]> => {
     const posts = new Map<string, BlogPost>();
     for (const item of payload.data) {
       const post = toFacebookBlogPost(item, config.pageId);
-      if (post) posts.set(post.slug, post);
+      if (post && isEducationalPost(post)) posts.set(post.slug, post);
     }
     return [...posts.values()].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
   } catch {
@@ -71,5 +71,6 @@ export const getFacebookPost = cache(async (slug: string): Promise<BlogPost | nu
   // Fetch by ID so older article links keep working outside the recent-feed window.
   // Transient failures propagate to the page error boundary rather than a false 404.
   const payload = await graphRead(id, config);
-  return toFacebookBlogPost(payload, config.pageId);
+  const post = toFacebookBlogPost(payload, config.pageId);
+  return post && isEducationalPost(post) ? post : null;
 });

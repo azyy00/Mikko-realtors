@@ -1,4 +1,4 @@
-export type LeadForm = "contact" | "home-valuation";
+export type LeadForm = "contact" | "home-valuation" | "guide";
 
 export type LeadPayload = {
   form: LeadForm;
@@ -9,13 +9,14 @@ export type LeadPayload = {
   intent?: string;
   address?: string;
   website?: string;
+  page?: string;
 };
 
 export async function submitLead(payload: LeadPayload) {
   const response = await fetch("/api/leads", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ page: window.location.pathname.slice(0, 300), ...payload }),
   });
 
   const data = (await response.json().catch(() => ({}))) as {

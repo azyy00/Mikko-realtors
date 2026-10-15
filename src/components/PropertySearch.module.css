@@ -55,7 +55,7 @@
 }
 
 .heading span {
-  color: #647469;
+  color: #8c6637;
 }
 
 .description {
@@ -132,12 +132,18 @@
   line-height: 1.7;
 }
 
+/* Navy search console: header, embed, and footer read as one object. The
+   Matrix embed's own toolbar is dark, so it continues the console surface. */
 .workspace {
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
-  border: 1px solid var(--search-line);
-  border-radius: 0.75rem;
-  background: #fff;
+  border-radius: 1.5rem;
+  background: #102238;
+  color: #fff;
+  box-shadow: 0 40px 80px -48px rgba(16, 34, 56, 0.75);
 }
+
 
 .toolbar {
   display: flex;
@@ -145,10 +151,37 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem 1.4rem;
-  border-bottom: 1px solid var(--search-line);
-  background: #fff;
+  gap: 1.5rem;
+  padding: 2.25rem 2.25rem 2rem;
+}
+
+.consoleHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  padding: 1.25rem 1.75rem;
+}
+
+.consoleHeading {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+
+.consoleHeading span {
+  color: #dec084;
+}
+
+.consoleText {
+  margin-top: 0.35rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .searchIdentity {
@@ -162,9 +195,9 @@
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border-radius: 0.5rem;
-  background: var(--bg);
-  color: #43643f;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #dec084;
 }
 
 .searchTitle {
@@ -176,7 +209,7 @@
 .status {
   margin-top: 0.3rem;
   font-size: 0.75rem;
-  color: var(--search-muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .actions {
@@ -194,38 +227,45 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.65rem 0.85rem;
-  border-radius: 0.375rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
   font-size: 0.8125rem;
-  font-weight: 500;
-  transition: background-color 180ms ease, transform 180ms ease;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .expandButton {
-  border: 1px solid var(--search-line);
-  background: #fff;
-}
-
-.expandButton:hover {
-  background: var(--bg);
-  border-color: var(--search-ink);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: #fff;
 }
 
 .externalLink,
 .loadButton {
-  background: var(--search-ink);
-  color: #fff;
+  background: #c9a56a;
+  color: #102238;
 }
 
-.externalLink:hover,
-.loadButton:hover {
-  background: #3c5260;
+@media (hover: hover) and (pointer: fine) {
+  .expandButton:hover {
+    border-color: #c9a56a;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .externalLink:hover,
+  .loadButton:hover {
+    background: #dec084;
+  }
 }
 
 .expandButton:active,
 .externalLink:active,
 .loadButton:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .searchPanel {
@@ -240,14 +280,17 @@
   display: block;
   width: 100%;
   min-width: 45rem;
-  height: clamp(49rem, 85svh, 68.75rem);
+  /* Matrix's search form and disclaimer end around 37rem; a taller frame only
+     showed the embed's empty grey page. Results scroll inside the frame, and
+     "Expand search" gives them the full screen. */
+  height: 40rem;
   border: 0;
   background: #fff;
 }
 
 .placeholder {
   display: flex;
-  min-height: clamp(49rem, 85svh, 68.75rem);
+  min-height: 40rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -271,15 +314,16 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.6rem 1.5rem;
-  padding: 1rem 1.4rem;
-  border-top: 1px solid var(--search-line);
-  font-size: 0.6875rem;
+  padding: 1rem 2.25rem 1.15rem;
+  font-size: 0.75rem;
   line-height: 1.6;
-  color: var(--search-muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .searchFooter a {
+  color: #fff;
   text-decoration: underline;
+  text-decoration-color: rgba(201, 165, 106, 0.7);
   text-underline-offset: 0.2rem;
 }
 
@@ -302,9 +346,9 @@
 }
 
 .error {
-  padding: 0.75rem 1.4rem;
+  padding: 0 2.25rem 1rem;
   font-size: 0.875rem;
-  background: var(--bg);
+  color: #ead6ac;
 }
 
 .mobileHint {
@@ -375,9 +419,26 @@
     height: 2.75rem;
   }
 
+  .workspace {
+    border-radius: 1.25rem;
+  }
+
   .toolbar {
-    gap: 0.85rem;
-    padding: 1rem;
+    gap: 1.25rem;
+    padding: 1.5rem 1.25rem 1.35rem;
+  }
+
+  .consoleHead {
+    padding: 1.25rem 1.25rem 1.1rem;
+  }
+
+  .consoleHeading {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+    text-wrap: balance;
+  }
+
+  .consoleText {
+    font-size: 0.875rem;
   }
 
   .actions {
@@ -392,15 +453,13 @@
   .mobileHint {
     display: block;
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--search-line);
-    background: var(--bg);
     font-size: 0.75rem;
     line-height: 1.65;
-    color: var(--search-muted);
+    color: rgba(255, 255, 255, 0.62);
   }
 
   .searchFooter {
-    padding: 1rem;
+    padding: 1rem 1.25rem;
   }
 
   .guidance a {

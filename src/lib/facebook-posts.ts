@@ -108,3 +108,42 @@ export function hasFacebookFeedChange(value: unknown, pageId: string): boolean {
       entry.changes.some(change => record(change)?.field === "feed");
   });
 }
+
+// Blog curation: only educational real estate posts appear on the website.
+// Add a post's ID (the part after "facebook-" in its /blog URL) to override
+// the automatic check for a specific post.
+export const ALWAYS_SHOW_POST_IDS: string[] = [];
+export const ALWAYS_HIDE_POST_IDS: string[] = [];
+
+const EDUCATIONAL_TOPICS = [
+  "real estate", "realtor", "home", "house", "property", "properties",
+  "buy", "sell", "listing", "market", "inventory", "price", "afford",
+  "mortgage", "loan", "va", "fha", "rate", "interest", "down payment",
+  "closing", "escrow", "pre-approv", "preapprov", "appraisal", "inspection",
+  "credit", "equity", "refinanc", "builder", "new construction", "incentive",
+  "hoa", "property tax", "insurance", "relocat", "moving to", "neighborhood",
+  "community", "summerlin", "henderson", "north las vegas", "first-time",
+  "first time", "tip", "guide", "step", "checklist", "how to", "what to know",
+];
+
+const ENTERTAINMENT_SIGNALS = [
+  "haircut", "funny", "joke", "meme", "prank", "lol", "lmao", "haha", "hehe",
+  "😂", "🤣", "😆", "😜", "birthday", "just for fun", "throwback", "#tbt",
+];
+
+// Terms match at the start of a word, so "tip" never matches "multiple".
+function mentions(text: string, term: string) {
+  if (!/^[a-z#]/.test(term)) return text.includes(term);
+  const escaped = term.trim().replace(/[.*+?^${}()|[\]\\#-]/g, "\\$&");
+  return new RegExp("(^|[^a-z])" + escaped).test(text);
+}
+
+/** Keeps buying, selling, and relocation education; drops jokes and personal posts. */
+export function isEducationalPost(post: BlogPost): boolean {
+  const id = post.slug.replace(/^facebook-/, "");
+  if (ALWAYS_HIDE_POST_IDS.includes(id)) return false;
+  if (ALWAYS_SHOW_POST_IDS.includes(id)) return true;
+  const text = post.body.join(" ").toLowerCase();
+  if (ENTERTAINMENT_SIGNALS.some((term) => mentions(text, term))) return false;
+  return EDUCATIONAL_TOPICS.filter((term) => mentions(text, term)).length >= 2;
+}

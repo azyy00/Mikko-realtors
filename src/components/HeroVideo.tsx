@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/** Inline mobile intro; desktop audio fades as its full-screen section leaves. */
+/** Inline intro video; desktop audio fades as the frame scrolls out of view. */
 export default function HeroVideo() {
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -14,7 +14,7 @@ export default function HeroVideo() {
     if (!player || !container) return;
 
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    // Keep this breakpoint aligned with the hero's lg full-screen layout.
+    // Keep this breakpoint aligned with the hero's lg two-column layout.
     const desktop = matchMedia("(min-width: 1024px)");
     let disposed = false;
     let blocked = false;
@@ -153,7 +153,7 @@ export default function HeroVideo() {
         playsInline
         preload="auto"
         aria-hidden="true"
-        className="h-full w-full object-contain lg:object-cover [@media(max-aspect-ratio:4/3)]:object-contain"
+        className="h-full w-full object-contain"
       />
     </div>
   );

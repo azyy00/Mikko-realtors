@@ -44,7 +44,7 @@ test("blog feed contains only Facebook posts and never substitutes samples", asy
 const security = load("src/lib/facebook-security.ts", { "node:crypto": crypto });
 const pageId = "12345";
 const published = {
-  id: "12345_67890", from: { id: pageId }, message: "An update from Mikko\n\nA second paragraph.",
+  id: "12345_67890", from: { id: pageId }, message: "VA loan tips for Las Vegas home buyers\n\nA second paragraph.",
   created_time: "2025-01-15T12:00:00+0000",
   is_published: true, is_hidden: false, is_expired: false,
   privacy: { value: "EVERYONE" }, targeting: {},
@@ -254,4 +254,14 @@ test("article lookup rejects foreign IDs without fetching and fetches older post
   assert.equal(requests, 0);
   assert.equal((await client.getFacebookPost("facebook-12345_67890")).slug, "facebook-12345_67890");
   assert.equal(requests, 1);
+});
+
+test("blog shows educational real estate posts and hides jokes or personal posts", () => {
+  const as = (message, id = "12345_1") => ({ slug: "facebook-" + id, body: [message] });
+  assert.equal(posts.isEducationalPost(as("3 tips before you buy a new construction home in Henderson")), true);
+  assert.equal(posts.isEducationalPost(as("VA loan update: rates dropped this week. Here's what it means for your mortgage.")), true);
+  assert.equal(posts.isEducationalPost(as("New haircut, who dis? 😂 Still selling homes though")), false);
+  assert.equal(posts.isEducationalPost(as("Happy birthday to my amazing wife!")), false);
+  assert.equal(posts.isEducationalPost(as("Multiple celebrations this weekend")), false);
+  assert.equal(posts.isEducationalPost(as("")), false);
 });

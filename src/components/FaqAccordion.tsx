@@ -26,7 +26,7 @@ export default function FaqAccordion({ faqs }: { faqs: Faq[] }) {
                 aria-controls={`${id}-answer-${i}`}
                 className="flex w-full items-center justify-between gap-4 py-5 text-left"
               >
-                <span className="font-medium text-ink">{f.q}</span>
+                <span className="font-display text-lg font-medium text-ink sm:text-xl">{f.q}</span>
                 <span
                   className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border transition-colors ${
                     isOpen
@@ -50,7 +50,7 @@ export default function FaqAccordion({ faqs }: { faqs: Faq[] }) {
               aria-labelledby={`${id}-question-${i}`}
               hidden={!isOpen}
             >
-              <p className="pb-5 pr-10 leading-relaxed text-muted">{f.a}</p>
+              <p className="pb-6 pr-10 text-[17px] leading-relaxed text-muted">{f.a}</p>
             </div>
           </div>
         );

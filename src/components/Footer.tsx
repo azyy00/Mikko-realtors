@@ -69,11 +69,13 @@ export default function Footer() {
               local expertise you can actually reach.
             </p>
             <div className="mt-6 flex gap-3">
-              {socials.map(({ icon, label, href }) => (
+              {socials.filter((s) => s.href).map(({ icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
-                  aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${label} (opens in a new tab)`}
                   className="grid h-11 w-11 place-items-center rounded-full transition-transform duration-200 hover:-translate-y-0.5"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -118,7 +120,7 @@ export default function Footer() {
             {agent.brokerage}.
           </p>
           <p className="max-w-md sm:text-right">
-            Equal Housing Opportunity · Listing data for demonstration only.
+            Equal Housing Opportunity · MLS listing information is deemed reliable but not guaranteed and should be independently verified.
           </p>
         </div>
       </div>
