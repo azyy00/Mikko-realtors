@@ -14,7 +14,7 @@ output
 *.log
 tsconfig.tsbuildinfo
 
-# Original media and local backups; the homepage streams from Vercel Blob.
+# Original media and local backups; the homepage plays public/videos/mikko-intro-720.mp4.
 Asssets
 public/videos/mikko-intro.mp4
 profile.png

@@ -146,7 +146,7 @@ export default function HeroVideo() {
       <video
         ref={video}
         crossOrigin="anonymous"
-        src="https://q0zmlpn3f0hgmxht.public.blob.vercel-storage.com/Mikko%20Lucernas%20WVO.mp4"
+        src="/videos/mikko-intro-720.mp4"
         poster="/videos/mikko-intro-poster.jpg"
         muted
         loop

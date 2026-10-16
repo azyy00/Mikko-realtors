@@ -20,7 +20,7 @@ On the mobile homepage (below 1024px), navigation is visible immediately with a 
 
 User-supplied source: `Asssets/Mikko Lucernas WVO.mp4`.
 Retained local backup: `public/videos/mikko-intro.mp4` (ignored by Git).
-Homepage playback source: `https://q0zmlpn3f0hgmxht.public.blob.vercel-storage.com/Mikko%20Lucernas%20WVO.mp4`.
+Homepage playback source: `public/videos/mikko-intro-720.mp4` (720p H.264, ~17 MB, made from `mikko-intro.mp4`). The earlier Vercel Blob copy was blocked by Vercel on 2026-10-16.
 Local source, backup, and verified Vercel upload SHA-256: `2e235efbcf42d1e18307c76729a544e06234156d21e1c402b7d92fbfa6507bf9`.
 
 The MP4 is byte-for-byte identical: H.264 video, 1920 × 1080, 30 fps, AAC audio, 76.93 seconds, 113,693,447 bytes. No re-encoding, compression or resolution change. Below 1024px, the 16:9 container and `object-fit: contain` show the complete frame without letterboxing. Desktop viewports at or below a 4:3 aspect ratio retain contained framing; wide desktop screens retain `object-fit: cover`. Display sharpness still depends on screen size/density and the original footage.
