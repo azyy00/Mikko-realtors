@@ -1,9 +1,11 @@
 import { agent, googleRating, reviews } from "@/lib/data";
+import { getGoogleReviews } from "@/lib/google-reviews";
 
 // JSON-LD structured data so search engines understand the business and can
 // show the star rating (rich result) in results. Swap "url"/"image" for the
 // real domain once it's live.
-export default function StructuredData() {
+export default async function StructuredData() {
+  const live = await getGoogleReviews();
   const data = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
@@ -25,8 +27,8 @@ export default function StructuredData() {
     sameAs: [googleRating.url],
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: googleRating.score,
-      reviewCount: String(googleRating.count),
+      ratingValue: live.score,
+      reviewCount: String(live.count),
       bestRating: "5",
       worstRating: "1",
     },

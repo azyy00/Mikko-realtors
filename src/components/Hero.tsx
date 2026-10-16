@@ -6,7 +6,7 @@ import {
   Star,
 } from "@phosphor-icons/react/dist/ssr";
 import HeroVideo from "./HeroVideo";
-import { googleRating } from "@/lib/data";
+import { getGoogleReviews } from "@/lib/google-reviews";
 import Marquee from "./Marquee";
 
 // One clear choice per visitor goal; each leads somewhere different.
@@ -17,7 +17,8 @@ const goals = [
   { label: "Sell My Home", href: "/home-valuation" },
 ];
 
-export default function Hero() {
+export default async function Hero() {
+  const googleRating = await getGoogleReviews();
   return (
     <>
       {/* Specialty marquee, then the edge-to-edge intro, under the fixed nav (72px, 80px from sm).
