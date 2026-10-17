@@ -11,7 +11,7 @@ export default async function Reviews() {
       <div className="container-x">
         <Reveal className="mx-auto flex max-w-xl flex-col items-center text-center">
           <h2 className="display text-3xl text-ink sm:text-5xl">
-            What clients say
+            What my clients say
           </h2>
           <div className="mt-3 flex items-center gap-3 sm:mt-5">
             <span className="tnum font-display text-3xl font-semibold text-ink sm:text-4xl">
