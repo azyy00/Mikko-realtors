@@ -2,8 +2,9 @@ import "server-only";
 import { googleRating, reviews as savedReviews, type Review } from "@/lib/data";
 
 // Live Google rating and reviews via the Places API (New), refreshed daily.
-// Without GOOGLE_PLACES_API_KEY + GOOGLE_PLACE_ID, or if Google fails, the
-// site falls back to the reviews transcribed in data.ts.
+// GOOGLE_PLACE_ID is optional: without it the listing is found by its Google
+// business name. Without GOOGLE_PLACES_API_KEY, or if Google fails, the site
+// falls back to the reviews transcribed in data.ts.
 
 export type GoogleReviews = {
   score: string;
@@ -21,12 +22,16 @@ type PlaceReview = {
 };
 
 type PlaceDetails = {
+  displayName?: { text?: string };
   rating?: number;
   userRatingCount?: number;
   reviews?: PlaceReview[];
 };
 
 const REFRESH_SECONDS = 60 * 60 * 24;
+// Mikko's listing name exactly as it appears on Google.
+const BUSINESS_NAME = "Mikko Lucernas - Pinoy Vegas Real Estate Agent";
+const FIELDS = ["displayName", "rating", "userRatingCount", "reviews"];
 
 const fallback: GoogleReviews = {
   score: googleRating.score,
@@ -39,20 +44,10 @@ const nameKey = (name: string) => name.toLowerCase().replace(/[^a-z]/g, "");
 
 export async function getGoogleReviews(): Promise<GoogleReviews> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
-  const placeId = process.env.GOOGLE_PLACE_ID;
-  if (!key || !placeId) return fallback;
+  if (!key) return fallback;
 
   try {
-    const response = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`, {
-      headers: {
-        "X-Goog-Api-Key": key,
-        "X-Goog-FieldMask": "rating,userRatingCount,reviews",
-      },
-      signal: AbortSignal.timeout(8_000),
-      next: { revalidate: REFRESH_SECONDS, tags: ["google-reviews"] },
-    });
-    if (!response.ok) throw new Error(`Places API returned ${response.status}`);
-    const place = (await response.json()) as PlaceDetails;
+    const place = await fetchPlace(key, process.env.GOOGLE_PLACE_ID);
 
     // Google returns at most five reviews; show those first, then the saved
     // reviews Google didn't return, so the marquee stays full.
@@ -78,4 +73,37 @@ export async function getGoogleReviews(): Promise<GoogleReviews> {
     console.error("Google reviews fetch failed; using saved reviews", error);
     return fallback;
   }
+}
+
+async function fetchPlace(key: string, placeId?: string): Promise<PlaceDetails> {
+  const init = {
+    signal: AbortSignal.timeout(8_000),
+    next: { revalidate: REFRESH_SECONDS, tags: ["google-reviews"] },
+  };
+
+  if (placeId) {
+    const response = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`, {
+      ...init,
+      headers: { "X-Goog-Api-Key": key, "X-Goog-FieldMask": FIELDS.join(",") },
+    });
+    if (!response.ok) throw new Error(`Places API returned ${response.status}`);
+    return (await response.json()) as PlaceDetails;
+  }
+
+  const response = await fetch("https://places.googleapis.com/v1/places:searchText", {
+    ...init,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": key,
+      "X-Goog-FieldMask": FIELDS.map((field) => `places.${field}`).join(","),
+    },
+    body: JSON.stringify({ textQuery: `${BUSINESS_NAME}, Las Vegas, NV` }),
+  });
+  if (!response.ok) throw new Error(`Places API search returned ${response.status}`);
+  const { places = [] } = (await response.json()) as { places?: PlaceDetails[] };
+  // Only trust a result that is clearly Mikko's listing, never a nearby agent.
+  const place = places.find((p) => p.displayName?.text?.toLowerCase().includes("lucernas"));
+  if (!place) throw new Error(`No Google listing named "${BUSINESS_NAME}" found`);
+  return place;
 }

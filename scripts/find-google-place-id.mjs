@@ -1,7 +1,7 @@
 // Finds the Google Place ID for Mikko's business profile.
-// Usage: GOOGLE_PLACES_API_KEY=... node scripts/find-google-place-id.mjs "Mikko Lucernas REALTOR Las Vegas"
+// Usage: GOOGLE_PLACES_API_KEY=... node scripts/find-google-place-id.mjs ["search text"]
 const key = process.env.GOOGLE_PLACES_API_KEY;
-const query = process.argv[2] || "Mikko Lucernas REALTOR Las Vegas";
+const query = process.argv[2] || "Mikko Lucernas - Pinoy Vegas Real Estate Agent, Las Vegas, NV";
 if (!key) {
   console.error("Set GOOGLE_PLACES_API_KEY first.");
   process.exit(1);
