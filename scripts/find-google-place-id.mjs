@@ -13,7 +13,8 @@ const response = await fetch("https://places.googleapis.com/v1/places:searchText
     "X-Goog-Api-Key": key,
     "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount",
   },
-  body: JSON.stringify({ textQuery: query }),
+  // Include listings without a public address, like Mikko's service-area profile.
+  body: JSON.stringify({ textQuery: query, includePureServiceAreaBusinesses: true }),
 });
 const data = await response.json();
 if (!response.ok) {

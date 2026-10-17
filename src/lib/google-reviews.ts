@@ -98,7 +98,9 @@ async function fetchPlace(key: string, placeId?: string): Promise<PlaceDetails> 
       "X-Goog-Api-Key": key,
       "X-Goog-FieldMask": FIELDS.map((field) => `places.${field}`).join(","),
     },
-    body: JSON.stringify({ textQuery: `${BUSINESS_NAME}, Las Vegas, NV` }),
+    // Mikko's listing has no public address (a service-area business), which
+    // Text Search leaves out unless asked.
+    body: JSON.stringify({ textQuery: `${BUSINESS_NAME}, Las Vegas, NV`, includePureServiceAreaBusinesses: true }),
   });
   if (!response.ok) throw new Error(`Places API search returned ${response.status}`);
   const { places = [] } = (await response.json()) as { places?: PlaceDetails[] };
