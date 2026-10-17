@@ -46,10 +46,10 @@ const columns = [
 export default function Footer() {
   return (
     <footer className="bg-navy-950 text-white/70">
-      <div className="container-x py-16">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
+      <div className="container-x pb-24 pt-10 sm:py-16">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-1 sm:gap-10 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           {/* Brand */}
-          <div>
+          <div className="col-span-2 sm:col-span-1">
             <Link
               href="/#top"
               className="inline-flex text-white"
@@ -61,14 +61,14 @@ export default function Footer() {
                 alt={agent.name}
                 width={412}
                 height={236}
-                className="h-14 w-auto"
+                className="h-11 w-auto sm:h-14"
               />
             </Link>
-            <p className="mt-4 max-w-xs text-sm">
+            <p className="mt-3 max-w-xs text-sm sm:mt-4">
               Modern Las Vegas real estate. New construction, relocation, and
               local expertise you can actually reach.
             </p>
-            <div className="mt-6 flex gap-3">
+            <div className="mt-4 flex gap-3 sm:mt-6">
               {socials.filter((s) => s.href).map(({ icon, label, href }) => (
                 <a
                   key={label}
@@ -92,11 +92,11 @@ export default function Footer() {
 
           {/* Link columns */}
           {columns.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+            <div key={col.title} className="min-w-0">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-white sm:text-sm">
                 {col.title}
               </h4>
-              <ul className="mt-4 space-y-2.5 text-sm">
+              <ul className="mt-3 space-y-2 text-sm sm:mt-4 sm:space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     <Link
@@ -112,9 +112,9 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 hairline opacity-60" />
+        <div className="mt-10 hairline opacity-60 sm:mt-14" />
 
-        <div className="mt-6 flex flex-col gap-4 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-5 flex flex-col gap-2 text-xs sm:mt-6 sm:gap-4 text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {agent.name}. {agent.license} ·{" "}
             {agent.brokerage}.

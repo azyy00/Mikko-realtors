@@ -63,41 +63,41 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative overflow-hidden py-24 text-white">
+    <section id="contact" className="relative overflow-hidden py-14 text-white sm:py-24">
       <BackgroundVideo src="/videos/bg-2.mp4" />
       <div className="pointer-events-none absolute inset-0 bg-navy-950/75" />
 
-      <div className="container-x relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
+      <div className="container-x relative grid gap-8 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
         {/* Left: invitation */}
         <div>
-          <h2 className="display text-4xl sm:text-5xl">
+          <h2 className="display text-3xl sm:text-5xl">
             Ready to find your place in Las Vegas?
           </h2>
-          <p className="mt-5 max-w-md text-white/70">
+          <p className="mt-3 max-w-md text-sm text-white/70 sm:mt-5 sm:text-base">
             Tell me a little about what you&apos;re looking for. I&apos;ll
             follow up personally, no call center, no pressure.
           </p>
 
-          <ul className="mt-8 space-y-4 text-sm">
+          <ul className="mt-5 space-y-2.5 text-sm sm:mt-8 sm:space-y-4">
             <li className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-white/8 text-gold-300">
-                <Phone size={18} weight="fill" />
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/8 text-gold-300 sm:h-10 sm:w-10">
+                <Phone size={16} weight="fill" />
               </span>
               <a href={agent.phoneHref} className="hover:text-gold-200">
                 {agent.phone}
               </a>
             </li>
             <li className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-white/8 text-gold-300">
-                <EnvelopeSimple size={18} weight="fill" />
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/8 text-gold-300 sm:h-10 sm:w-10">
+                <EnvelopeSimple size={16} weight="fill" />
               </span>
               <a href={`mailto:${agent.email}`} className="hover:text-gold-200">
                 {agent.email}
               </a>
             </li>
             <li className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-white/8 text-gold-300">
-                <MapPin size={18} weight="fill" />
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/8 text-gold-300 sm:h-10 sm:w-10">
+                <MapPin size={16} weight="fill" />
               </span>
               Serving Las Vegas · Henderson · North Las Vegas
             </li>
@@ -105,7 +105,7 @@ export default function Contact() {
         </div>
 
         {/* Right: form card */}
-        <div className="contact-glass rounded-xl2 p-6 sm:p-8">
+        <div className="contact-glass rounded-xl2 p-4 sm:p-8">
           {status === "success" ? (
             <div
               ref={successRef}
@@ -142,7 +142,7 @@ export default function Contact() {
               onSubmit={handleSubmit}
               aria-busy={status === "submitting"}
               noValidate
-              className="flex flex-col gap-5"
+              className="flex flex-col gap-4 sm:gap-5"
             >
               {status === "error" && (
                 <p
@@ -160,8 +160,8 @@ export default function Contact() {
                   directly.
                 </p>
               )}
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-2 gap-3 sm:gap-5">
+                <div className="flex min-w-0 flex-col gap-1.5 sm:gap-2">
                   <label
                     htmlFor="name"
                     className="text-sm font-medium text-white/80"
@@ -179,7 +179,7 @@ export default function Contact() {
                     value={form.name}
                     onChange={(e) => set("name", e.target.value)}
                     placeholder="Jordan Rivera"
-                    className={`rounded-xl border bg-white/[0.08] px-4 py-3 text-sm text-white placeholder:text-white/55 outline-none transition-colors focus:border-gold-400 ${
+                    className={`rounded-xl border bg-white/[0.08] px-3.5 py-2.5 text-base text-white sm:px-4 sm:py-3 sm:text-sm placeholder:text-white/55 outline-none transition-colors focus:border-gold-400 ${
                       errors.name ? "border-red-400/70" : "border-white/15"
                     }`}
                   />
@@ -189,7 +189,7 @@ export default function Contact() {
                     </span>
                   )}
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex min-w-0 flex-col gap-1.5 sm:gap-2">
                   <label
                     htmlFor="phone"
                     className="text-sm font-medium text-white/80"
@@ -205,12 +205,12 @@ export default function Contact() {
                     value={form.phone}
                     onChange={(e) => set("phone", e.target.value)}
                     placeholder="(702) 555-0148"
-                    className="rounded-xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm text-white placeholder:text-white/55 outline-none transition-colors focus:border-gold-400"
+                    className="rounded-xl border border-white/15 bg-white/[0.08] px-3.5 py-2.5 text-base text-white sm:px-4 sm:py-3 sm:text-sm placeholder:text-white/55 outline-none transition-colors focus:border-gold-400"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex min-w-0 flex-col gap-1.5 sm:gap-2">
                 <label
                   htmlFor="email"
                   className="text-sm font-medium text-white/80"
@@ -229,7 +229,7 @@ export default function Contact() {
                   value={form.email}
                   onChange={(e) => set("email", e.target.value)}
                   placeholder="you@email.com"
-                  className={`rounded-xl border bg-white/[0.08] px-4 py-3 text-sm text-white placeholder:text-white/55 outline-none transition-colors focus:border-gold-400 ${
+                  className={`rounded-xl border bg-white/[0.08] px-3.5 py-2.5 text-base text-white sm:px-4 sm:py-3 sm:text-sm placeholder:text-white/55 outline-none transition-colors focus:border-gold-400 ${
                     errors.email ? "border-red-400/70" : "border-white/15"
                   }`}
                 />
@@ -240,11 +240,11 @@ export default function Contact() {
                 )}
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex min-w-0 flex-col gap-1.5 sm:gap-2">
                 <span className="text-sm font-medium text-white/80">
                   I&apos;m interested in
                 </span>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                   {intents.map((it) => (
                     <button
                       type="button"
@@ -252,7 +252,7 @@ export default function Contact() {
                       disabled={status === "submitting"}
                       key={it}
                       onClick={() => set("intent", it)}
-                      className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                      className={`min-h-10 rounded-full border px-3 py-2 text-sm transition-colors sm:min-h-0 sm:px-4 ${
                         form.intent === it
                           ? "border-gold-400 bg-gold-400 text-navy-950"
                           : "border-white/15 text-white/75 hover:border-white/40"
@@ -264,7 +264,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex min-w-0 flex-col gap-1.5 sm:gap-2">
                 <label
                   htmlFor="message"
                   className="text-sm font-medium text-white/80"
@@ -279,7 +279,7 @@ export default function Contact() {
                   value={form.message}
                   onChange={(e) => set("message", e.target.value)}
                   placeholder="Tell me about your timeline, budget, or the area you like."
-                  className="resize-none rounded-xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm text-white placeholder:text-white/55 outline-none transition-colors focus:border-gold-400"
+                  className="h-20 resize-none rounded-xl sm:h-auto border border-white/15 bg-white/[0.08] px-3.5 py-2.5 text-base text-white sm:px-4 sm:py-3 sm:text-sm placeholder:text-white/55 outline-none transition-colors focus:border-gold-400"
                 />
               </div>
 
