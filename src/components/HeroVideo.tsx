@@ -14,7 +14,7 @@ export default function HeroVideo() {
     if (!player || !container) return;
 
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    // Keep this breakpoint aligned with the hero's lg two-column layout.
+    // Desktop (lg) fades audio with scroll; smaller screens keep full volume while visible.
     const desktop = matchMedia("(min-width: 1024px)");
     let disposed = false;
     let blocked = false;

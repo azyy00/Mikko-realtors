@@ -426,6 +426,10 @@ export type Review = {
   name: string;
   role: string;
   text: string;
+  /** Star rating; the saved reviews below are all 5 stars. */
+  rating?: number;
+  /** Reviewer's Google profile, for attribution on live reviews. */
+  url?: string;
 };
 
 // Real reviews pulled from Mikko's Google Business Profile (transcribed verbatim,

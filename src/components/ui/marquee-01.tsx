@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee-01-utils/marquee";
 import type { Review } from "@/lib/data";
 
-function ReviewCard({ name, role, text }: Review) {
+function ReviewCard({ name, role, text, rating = 5, url }: Review) {
   const initials = name
     .split(/\s+/)
     .map((part) => part[0])
@@ -23,13 +23,22 @@ function ReviewCard({ name, role, text }: Review) {
             {initials}
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground">{name}</p>
+            <p className="text-sm font-semibold text-foreground">
+              {url ? (
+                <a href={url} target="_blank" rel="noopener noreferrer" className="hover:text-gold-600">
+                  {name}
+                </a>
+              ) : (
+                name
+              )}
+            </p>
             <p className="mt-0.5 text-xs text-muted-foreground">{role}</p>
           </div>
         </div>
-        <div aria-hidden="true" className="flex gap-0.5 text-gold-500">
+        <div className="flex gap-0.5 text-gold-500">
+          <span className="sr-only">{rating} out of 5 stars</span>
           {Array.from({ length: 5 }, (_, index) => (
-            <Star key={index} size={14} weight="fill" />
+            <Star key={index} size={14} weight={index < Math.round(rating) ? "fill" : "regular"} aria-hidden="true" />
           ))}
         </div>
         <blockquote className="text-sm leading-relaxed text-navy-800">

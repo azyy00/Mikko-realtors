@@ -1,9 +1,11 @@
 import { Star, GoogleLogo } from "@phosphor-icons/react/dist/ssr";
 import Reveal from "./Reveal";
-import { reviews, googleRating } from "@/lib/data";
+import { googleRating } from "@/lib/data";
+import { getGoogleReviews } from "@/lib/google-reviews";
 import TestimonialMarquee from "./ui/marquee-01";
 
-export default function Reviews() {
+export default async function Reviews() {
+  const { score, count, reviews } = await getGoogleReviews();
   return (
     <section id="reviews" className="bg-cream py-24">
       <div className="container-x">
@@ -13,7 +15,7 @@ export default function Reviews() {
           </h2>
           <div className="mt-5 flex items-center gap-3">
             <span className="tnum font-display text-4xl font-semibold text-ink">
-              {googleRating.score}
+              {score}
             </span>
             <div className="flex text-gold-400">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -22,7 +24,7 @@ export default function Reviews() {
             </div>
           </div>
           <p className="mt-2 text-muted">
-            Based on {googleRating.count} verified Google reviews
+            Based on {count} verified Google reviews
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <a

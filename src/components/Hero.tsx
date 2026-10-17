@@ -6,7 +6,7 @@ import {
   Star,
 } from "@phosphor-icons/react/dist/ssr";
 import HeroVideo from "./HeroVideo";
-import { googleRating } from "@/lib/data";
+import { getGoogleReviews } from "@/lib/google-reviews";
 import Marquee from "./Marquee";
 
 // One clear choice per visitor goal; each leads somewhere different.
@@ -17,22 +17,24 @@ const goals = [
   { label: "Sell My Home", href: "/home-valuation" },
 ];
 
-export default function Hero() {
+export default async function Hero() {
+  const googleRating = await getGoogleReviews();
   return (
     <>
-      {/* Specialty marquee, then the edge-to-edge intro, under the fixed nav (72px, 80px from sm).
-          The frame always spans the full width at 16:9, so nothing is cropped:
-          the captions burned into the video stay visible on every screen. On
-          wide monitors the bottom of the video continues just below the fold. */}
+      {/* Edge-to-edge intro directly under the fixed nav (72px, 80px from sm),
+          then the specialty marquee. The frame always spans the full width at
+          16:9, so nothing is cropped: the captions burned into the video stay
+          visible on every screen. On wide monitors the bottom of the video
+          continues just below the fold. */}
       <section
         id="top"
         aria-label="Mikko's introduction"
         className="bg-navy-950 pt-[72px] sm:pt-20"
       >
-        <Marquee />
         <div className="relative aspect-video w-full">
           <HeroVideo />
         </div>
+        <Marquee />
       </section>
 
       <section
