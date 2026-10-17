@@ -13,8 +13,8 @@ function ReviewCard({ name, role, text, rating = 5, url }: Review) {
     .join("")
     .toUpperCase();
   return (
-    <Card role="listitem" className="w-72 shrink-0 p-5 shadow-none sm:w-80">
-      <CardContent className="flex h-full flex-col gap-4 p-0">
+    <Card role="listitem" className="w-64 shrink-0 p-4 shadow-none sm:w-80 sm:p-5">
+      <CardContent className="flex h-full flex-col gap-3 p-0 sm:gap-4">
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
@@ -41,7 +41,7 @@ function ReviewCard({ name, role, text, rating = 5, url }: Review) {
             <Star key={index} size={14} weight={index < Math.round(rating) ? "fill" : "regular"} aria-hidden="true" />
           ))}
         </div>
-        <blockquote className="text-sm leading-relaxed text-navy-800">
+        <blockquote className="line-clamp-6 text-sm leading-relaxed text-navy-800 sm:line-clamp-none">
           {text}
         </blockquote>
       </CardContent>
@@ -61,7 +61,7 @@ export default function TestimonialMarquee({
   if (rows.length === 0) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-6 sm:mt-8">
       <div
         id="review-marquee-rows"
         className="review-marquee-rows relative flex w-full flex-col gap-2"
