@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
+import { ArrowsOut, CaretLeft, CaretRight, SealCheck, X } from "@phosphor-icons/react";
+
+const chip = "bg-navy-950/75 text-[11px] font-semibold text-white backdrop-blur-sm";
 
 export default function SoldGallery({ photos }: { photos: string[] }) {
   const [open, setOpen] = useState<number | null>(null);
@@ -45,23 +47,39 @@ export default function SoldGallery({ photos }: { photos: string[] }) {
 
   return (
     <>
-      {/* Masonry grid */}
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+      {/* Phones: two-up poster cards like the blog. From sm up: masonry of whole flyers. */}
+      <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:block sm:columns-2 sm:gap-4 lg:columns-3">
         {photos.map((src, i) => (
           <button
             key={src}
             type="button"
             onClick={() => setOpen(i)}
             aria-label={`View closing photo ${i + 1}`}
-            className="group mb-4 block w-full break-inside-avoid overflow-hidden rounded-xl2 border border-navy-900/10 bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+            className="group block w-full min-w-0 rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:mb-4 sm:break-inside-avoid sm:rounded-xl2"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={src}
-              alt={`Sold in Las Vegas with Mikko Lucernas (${i + 1})`}
-              loading="lazy"
-              className="w-full transition-transform duration-500 group-hover:scale-[1.04]"
-            />
+            <span className="relative block aspect-[3/4] overflow-hidden rounded-xl bg-navy-950 sm:aspect-auto sm:rounded-xl2 sm:border sm:border-navy-900/10 sm:bg-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={`Sold in Las Vegas with Mikko Lucernas (${i + 1})`}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] sm:h-auto"
+              />
+              <span className={`absolute left-2 top-2 inline-flex items-center gap-1 rounded-full py-1 pl-1.5 pr-2.5 sm:hidden ${chip}`}>
+                <SealCheck size={13} weight="fill" className="text-sage-300" aria-hidden="true" />
+                Sold
+              </span>
+              <span aria-hidden="true" className={`absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full sm:hidden ${chip}`}>
+                <ArrowsOut size={14} weight="bold" />
+              </span>
+            </span>
+            <span className="mt-2.5 flex min-w-0 items-center gap-2 sm:hidden">
+              <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-gold-400" />
+              <span className="tnum truncate font-display text-base font-semibold text-ink">
+                Closing {String(i + 1).padStart(2, "0")}
+              </span>
+            </span>
+            <span className="mt-0.5 block text-xs text-muted sm:hidden">Las Vegas · Tap to view</span>
           </button>
         ))}
       </div>

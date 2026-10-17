@@ -17,34 +17,34 @@ export default function SoldPage() {
     <>
       <Nav solid />
       <main id="main-content" tabIndex={-1} className="bg-white">
-        <section aria-labelledby="sold-heading" className="pb-16 pt-28 sm:pb-20 sm:pt-32">
+        <section aria-labelledby="sold-heading" className="pb-14 pt-24 sm:pb-20 sm:pt-32">
           <div className="container-x">
             <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted">
               <Link href="/" className="hover:text-gold-600">Home</Link>
               <CaretRight size={12} aria-hidden="true" />
               <span aria-current="page" className="text-navy-900">Just Sold</span>
             </nav>
-            <div className="mx-auto mt-8 max-w-5xl text-center sm:mt-10">
+            <div className="mx-auto mt-6 max-w-5xl text-center sm:mt-10">
               <p className="flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-wider text-gold-600">
                 <SealCheck size={18} weight="fill" className="text-sage-500" />
                 Just Sold
               </p>
-              <h1 id="sold-heading" className="display mt-3 text-balance text-4xl text-ink sm:text-5xl lg:text-6xl">
+              <h1 id="sold-heading" className="display mt-2 text-balance text-3xl sm:mt-3 text-ink sm:text-5xl lg:text-6xl">
                 Real families. Real keys.
               </h1>
-              <p className="mx-auto mt-5 max-w-2xl text-pretty text-muted sm:text-lg">
+              <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm text-muted sm:mt-5 sm:text-lg">
                 All {soldPhotos.length} closings are actual Las Vegas families
                 Mikko helped buy or sell. Tap any photo to see it larger.
               </p>
             </div>
           </div>
 
-          <div className="container-x mt-10 sm:mt-12">
+          <div className="container-x mt-7 sm:mt-12">
             <SoldGallery photos={soldPhotos} />
           </div>
 
-          <div className="container-x mt-14">
-            <div className="flex flex-col items-start justify-between gap-6 rounded-xl2 bg-navy-950 p-8 text-white sm:flex-row sm:items-center sm:p-10">
+          <div className="container-x mt-10 sm:mt-14">
+            <div className="flex flex-col items-start justify-between gap-6 rounded-xl2 bg-navy-950 p-6 text-white sm:flex-row sm:items-center sm:p-10">
               <div>
                 <h2 className="font-display text-2xl font-semibold sm:text-3xl">Want to be the next one?</h2>
                 <p className="mt-2 max-w-md text-sm text-white/65">
