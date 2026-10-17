@@ -35,9 +35,9 @@ export default async function BuyPage({
         />
 
         {/* Back to full site / contact */}
-        <section className="bg-paper py-20">
+        <section className="bg-paper py-10 sm:py-20">
           <div className="container-x">
-            <div className="flex flex-col items-start justify-between gap-6 rounded-xl2 bg-navy-950 p-8 text-white sm:flex-row sm:items-center sm:p-10">
+            <div className="flex flex-col items-start justify-between gap-6 rounded-xl2 bg-navy-950 p-6 text-white sm:flex-row sm:items-center sm:p-10">
               <div>
                 <h2 className="font-display text-2xl font-semibold sm:text-3xl">
                   Not sure where to start?

@@ -180,7 +180,7 @@ export default function Nav({
           aria-label="Mobile navigation"
           className="max-h-[70vh] overflow-y-auto border-t border-white/10 bg-navy-950 lg:hidden"
         >
-          <div className="mx-auto flex w-full max-w-[1760px] flex-col px-5 py-3 sm:px-8">
+          <div className="mx-auto flex w-full max-w-[1760px] flex-col px-5 py-1 sm:px-8 sm:py-3">
             {nav.map((item) =>
               item.children ? (
                 <div
@@ -196,7 +196,7 @@ export default function Nav({
                         g === item.label ? null : item.label,
                       )
                     }
-                    className="flex w-full items-center justify-between py-4 font-display text-xl text-white"
+                    className="flex min-h-12 w-full items-center justify-between py-2.5 font-display text-lg text-white sm:py-4 sm:text-xl"
                   >
                     {item.label}
                     <CaretDown
@@ -219,7 +219,7 @@ export default function Nav({
                             key={c.href}
                             href={c.href}
                             onClick={() => setOpen(false)}
-                            className="py-2.5 text-[15px] text-white/75"
+                            className="py-2 text-[15px] text-white/75 sm:py-2.5"
                           >
                             {c.label}
                           </Link>
@@ -233,13 +233,13 @@ export default function Nav({
                   key={item.label}
                   href={item.href ?? "/"}
                   onClick={() => setOpen(false)}
-                  className="border-b border-white/10 py-4 font-display text-xl text-white no-underline"
+                  className="flex min-h-12 items-center border-b border-white/10 py-2.5 font-display text-lg text-white no-underline sm:py-4 sm:text-xl"
                 >
                   {item.label}
                 </Link>
               ),
             )}
-            <a href={agent.phoneHref} className="btn-gold mt-4">
+            <a href={agent.phoneHref} className="btn-gold mb-3 mt-3 sm:mb-0 sm:mt-4">
               <Phone size={16} weight="fill" /> Call {agent.phone}
             </a>
           </div>
