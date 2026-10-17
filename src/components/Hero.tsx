@@ -40,7 +40,7 @@ export default async function Hero() {
       <section
         id="home-introduction"
         aria-labelledby="home-heading"
-        className="relative isolate overflow-hidden bg-paper pb-10 pt-10 sm:pb-16 sm:pt-16 lg:pb-20 lg:pt-20"
+        className="relative isolate overflow-hidden bg-paper pb-8 pt-7 sm:pb-16 sm:pt-16 lg:pb-20 lg:pt-20"
       >
         {/* Oversized outlined word, purely decorative, bleeding off the right edge. */}
         <span
@@ -53,7 +53,7 @@ export default async function Hero() {
         <div className="container-x">
           <h1
             id="home-heading"
-            className="intro-rise display text-[clamp(2.75rem,8.6vw,8.25rem)] leading-[0.95] text-ink"
+            className="intro-rise display text-[clamp(2.25rem,8.6vw,8.25rem)] leading-[0.95] text-ink"
           >
             <span className="block">Find your home</span>
             <span className="block">
@@ -68,13 +68,13 @@ export default async function Hero() {
             </span>
           </h1>
 
-          <div className="intro-rise intro-rise-late mt-8 grid gap-6 border-t border-navy-900/10 pt-6 sm:mt-12 sm:pt-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-12">
+          <div className="intro-rise intro-rise-late mt-5 grid gap-4 border-t border-navy-900/10 pt-5 sm:mt-12 sm:gap-6 sm:pt-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-12">
             <p className="max-w-[36rem] text-pretty text-[15px] leading-relaxed text-muted sm:text-lg">
               Army veteran and Las Vegas REALTOR® Mikko Lucernas helps you buy,
               sell, or relocate, with a focus on new construction.
             </p>
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-              <Link href="/buy" className="btn-gold px-5 py-3.5 shadow-[0_10px_24px_-12px_rgba(140,102,55,0.7)] sm:px-7">
+              <Link href="/buy" className="btn-gold px-5 py-3 shadow-[0_10px_24px_-12px_rgba(140,102,55,0.7)] sm:px-7 sm:py-3.5">
                 <MagnifyingGlass size={18} weight="bold" />
                 Search Homes
               </Link>
@@ -85,14 +85,14 @@ export default async function Hero() {
             </div>
           </div>
 
-          <nav aria-label="Start with your goal" className="intro-rise intro-rise-late mt-8 sm:mt-12">
+          <nav aria-label="Start with your goal" className="intro-rise intro-rise-late mt-6 sm:mt-12">
             <p className="text-sm text-muted">I want help with</p>
-            <ul className="mt-2 grid sm:mt-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="mt-1 grid sm:mt-3 sm:grid-cols-2 lg:grid-cols-4">
               {goals.map((goal) => (
                 <li key={goal.label}>
                   <Link
                     href={goal.href}
-                    className="goal-link group flex min-h-14 items-center justify-between gap-3 border-b border-navy-900/10 py-3 font-display text-xl font-medium text-ink sm:text-2xl lg:mr-6"
+                    className="goal-link group flex min-h-12 items-center justify-between gap-3 border-b border-navy-900/10 py-2 font-display text-lg font-medium text-ink sm:min-h-14 sm:py-3 sm:text-2xl lg:mr-6"
                   >
                     <span className="goal-label">{goal.label}</span>
                     <ArrowUpRight size={20} weight="bold" aria-hidden="true" className="shrink-0 text-gold-600" />
@@ -104,9 +104,9 @@ export default async function Hero() {
 
           <Link
             href="/#reviews"
-            className="intro-rise intro-rise-late mt-8 inline-flex flex-wrap items-baseline gap-x-3 gap-y-1 text-ink sm:mt-10"
+            className="intro-rise intro-rise-late mt-5 inline-flex flex-wrap items-baseline gap-x-3 gap-y-1 text-ink sm:mt-10"
           >
-            <span className="tnum font-display text-3xl font-semibold leading-none">{googleRating.score}</span>
+            <span className="tnum font-display text-2xl font-semibold sm:text-3xl leading-none">{googleRating.score}</span>
             <span className="flex self-center text-gold-400" aria-hidden="true">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} size={15} weight="fill" />
