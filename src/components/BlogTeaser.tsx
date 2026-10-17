@@ -8,7 +8,7 @@ import { downloadGuides } from "@/lib/guides";
 
 /** Homepage resources: free guides first, then Mikko's educational posts. */
 export default async function BlogTeaser() {
-  const posts = (await getBlogPosts()).slice(0, 3);
+  const posts = (await getBlogPosts()).slice(0, 4);
   const featuredGuides = downloadGuides.slice(0, 3);
 
   return (
@@ -75,7 +75,7 @@ export default async function BlogTeaser() {
                 <ArrowUpRight size={16} />
               </Link>
             </Reveal>
-            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4">
               {posts.map((post, i) => (
                 <Reveal key={post.slug} delay={i * 0.06}>
                   <BlogCard post={post} />

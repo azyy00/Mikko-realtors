@@ -7,7 +7,7 @@ import { type BlogPost } from "@/lib/blog";
 
 export default function BlogArchive({
   posts,
-  initial = 6,
+  initial = 8,
 }: {
   posts: BlogPost[];
   initial?: number;
@@ -18,7 +18,7 @@ export default function BlogArchive({
 
   return (
     <>
-      <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4">
         {visible.map((post) => (
           <div key={post.slug} className="min-w-0">
             <BlogCard post={post} />
