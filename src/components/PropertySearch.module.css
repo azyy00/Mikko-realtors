@@ -393,19 +393,29 @@
     margin-bottom: 1rem;
   }
 
+  /* Phones: "Ask Mikko" sits in the top-right corner beside the heading,
+     and the description runs full width underneath both. */
   .introduction {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.9rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 0 1rem;
     padding-bottom: 1.25rem;
   }
 
+  .introduction > div {
+    display: contents;
+  }
+
   .heading {
-    max-width: 19ch;
+    grid-column: 1;
+    grid-row: 1;
     font-size: clamp(1.75rem, 7vw, 2.25rem);
   }
 
   .description {
+    grid-column: 1 / -1;
+    grid-row: 2;
     max-width: 40ch;
     margin-top: 0.6rem;
     font-size: 0.875rem;
@@ -413,17 +423,28 @@
   }
 
   .advisor {
-    gap: 0.7rem;
-    margin-left: -0.4rem;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    margin: -0.4rem -0.4rem 0 0;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-align: center;
   }
 
   .portrait {
-    width: 2.25rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 3.25rem;
+    border-radius: 0.5rem;
   }
 
   .advisorLabel {
-    margin-bottom: 0.15rem;
+    display: none;
+  }
+
+  .advisorName {
+    gap: 0.3rem;
+    font-size: 0.8125rem;
   }
 
   .workspace {

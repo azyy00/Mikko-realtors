@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight, FacebookLogo, Globe, MessengerLogo } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 
 const destinations = [
@@ -9,6 +9,7 @@ const destinations = [
     description: "This is a place where you can invite or join amazing people to drink, hangout, make friends, socialize and have fun with filipinos in Metro Las Vegas.",
     href: "https://www.facebook.com/share/g/1EnLoPA1EL/?mibextid=wwXIfr",
     action: "View Facebook group",
+    icon: <FacebookLogo size={20} weight="fill" className="text-[#1877F2]" />,
   },
   {
     name: "Tambayan sa Las Vegas Chat",
@@ -17,6 +18,7 @@ const destinations = [
     description: "Open the Tambayan sa Las Vegas Chat invitation on Messenger.",
     href: "https://m.me/cm/AbZm7_EaZJIdHh6O/?send_source=cm%3Acopy_invite_link",
     action: "Open Messenger chat",
+    icon: <MessengerLogo size={20} weight="fill" className="text-[#0866FF]" />,
   },
   {
     name: "Tambayan BBQ",
@@ -25,6 +27,7 @@ const destinations = [
     description: "Explore Tambayan BBQ on the restaurant’s own website.",
     href: "https://tambayanbbqlv.com/",
     action: "Visit restaurant website",
+    icon: <Globe size={20} weight="bold" className="text-gold-600" />,
   },
 ];
 
@@ -69,15 +72,16 @@ export default function LocalConnections() {
                 <p className="mt-1.5 line-clamp-2 max-w-md text-sm leading-relaxed text-muted sm:mt-3 sm:line-clamp-none">
                   {destination.description}
                 </p>
-                <div className="mt-auto sm:pt-4">
+                <div className="mt-auto pt-3 sm:pt-5">
                   <a
                     href={destination.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy-800 underline decoration-gold-500 underline-offset-4 transition-colors hover:text-gold-600 focus-visible:outline-gold-600"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gold-400/70 bg-white py-2 pl-3 pr-4 text-sm font-semibold text-navy-800 transition-colors hover:border-gold-500 hover:bg-cream focus-visible:outline-gold-600 active:scale-[0.98]"
                   >
+                    <span aria-hidden="true" className="shrink-0">{destination.icon}</span>
                     {destination.action}
-                    <ArrowUpRight size={18} aria-hidden="true" className="shrink-0" />
+                    <ArrowUpRight size={16} aria-hidden="true" className="shrink-0 text-navy-700" />
                     <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                 </div>
