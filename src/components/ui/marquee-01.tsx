@@ -1,11 +1,30 @@
 "use client";
 
+import { useState } from "react";
 import { Star } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee-01-utils/marquee";
 import type { Review } from "@/lib/data";
 
-function ReviewCard({ name, role, text, rating = 5, url }: Review) {
+// Google profile photo when the review came live from Google; initials otherwise
+// or if the photo fails to load.
+function Avatar({ name, photo }: { name: string; photo?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (photo && !failed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={photo}
+        alt=""
+        width={40}
+        height={40}
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+        className="h-10 w-10 shrink-0 rounded-full bg-navy-950 object-cover"
+      />
+    );
+  }
   const initials = name
     .split(/\s+/)
     .map((part) => part[0])
@@ -13,15 +32,21 @@ function ReviewCard({ name, role, text, rating = 5, url }: Review) {
     .join("")
     .toUpperCase();
   return (
+    <span
+      aria-hidden="true"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-navy-950 text-xs font-semibold text-gold-200"
+    >
+      {initials}
+    </span>
+  );
+}
+
+function ReviewCard({ name, role, text, rating = 5, url, photo }: Review) {
+  return (
     <Card role="listitem" className="w-64 shrink-0 p-4 shadow-none sm:w-80 sm:p-5">
       <CardContent className="flex h-full flex-col gap-3 p-0 sm:gap-4">
         <div className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-navy-950 text-xs font-semibold text-gold-200"
-          >
-            {initials}
-          </span>
+          <Avatar name={name} photo={photo} />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground">
               {url ? (

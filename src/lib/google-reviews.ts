@@ -18,7 +18,7 @@ type PlaceReview = {
   text?: { text?: string };
   originalText?: { text?: string };
   relativePublishTimeDescription?: string;
-  authorAttribution?: { displayName?: string; uri?: string };
+  authorAttribution?: { displayName?: string; uri?: string; photoUri?: string };
 };
 
 type PlaceDetails = {
@@ -58,6 +58,7 @@ export async function getGoogleReviews(): Promise<GoogleReviews> {
         text: (r.originalText?.text ?? r.text?.text ?? "").trim(),
         rating: r.rating,
         url: r.authorAttribution?.uri,
+        photo: r.authorAttribution?.photoUri,
       }))
       .filter((r) => r.name && r.text);
     const seen = new Set(live.map((r) => nameKey(r.name)));

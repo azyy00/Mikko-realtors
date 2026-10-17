@@ -430,6 +430,8 @@ export type Review = {
   rating?: number;
   /** Reviewer's Google profile, for attribution on live reviews. */
   url?: string;
+  /** Reviewer's Google profile photo, on live reviews. */
+  photo?: string;
 };
 
 // Real reviews pulled from Mikko's Google Business Profile (transcribed verbatim,
