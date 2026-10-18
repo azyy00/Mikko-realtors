@@ -90,17 +90,18 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
   return (
     <div className="min-h-[100dvh] bg-paper text-ink">
       <header className="bg-navy-950 text-white">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-8">
-          <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="" width={36} height={36} className="h-9 w-auto" />
-            <span className="font-display text-lg tracking-wide">Site dashboard</span>
+        {/* One row on every screen: brand and title left, actions right. */}
+        <div className="mx-auto flex max-w-[1240px] items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-8 sm:py-4">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <Image src="/logo.png" alt="" width={412} height={236} className="h-7 w-auto shrink-0 min-[400px]:h-8 sm:h-9" />
+            <span className="truncate font-display text-[15px] tracking-wide min-[400px]:text-base sm:text-lg">Site dashboard</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href="/" className="rounded-full px-4 py-2 text-sm text-white/75 transition-colors hover:text-white">
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
+            <Link href="/" className="whitespace-nowrap rounded-full px-2 py-2 text-[13px] text-white/75 min-[400px]:px-2.5 min-[400px]:text-sm transition-colors hover:text-white sm:px-4">
               View site
             </Link>
             <form action={logout}>
-              <button type="submit" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm transition-colors hover:border-gold-300 hover:text-gold-300 active:scale-[0.97]">
+              <button type="submit" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/20 px-2.5 py-2 text-[13px] min-[400px]:px-3 min-[400px]:text-sm transition-colors hover:border-gold-300 hover:text-gold-300 active:scale-[0.97] sm:gap-2 sm:px-4">
                 <SignOut size={16} aria-hidden="true" />
                 Sign out
               </button>
