@@ -80,7 +80,6 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     return qs ? `/admin?${qs}` : "/admin";
   };
 
-  const peak = Math.max(1, ...data.daily.map((d) => d.visitors));
   const stats = [
     { label: "Visitors", value: data.totals.visitors, note: "unique per day" },
     { label: "Page views", value: data.totals.views },
@@ -132,45 +131,15 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
           ))}
         </dl>
 
-        <section aria-labelledby="daily-heading" className="mt-12">
+        <section aria-labelledby="daily-heading" className="mt-12 rounded-xl2 border border-navy-900/10 bg-white p-5 sm:p-7">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="daily-heading" className="display text-2xl">Visitors per day</h2>
             <p className="text-sm text-muted">
-              <span className="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-navy-900" aria-hidden="true" />
-              visitors
-              <span className="ml-4 mr-1.5 inline-block h-2.5 w-2.5 rounded-full bg-gold-400" aria-hidden="true" />
+              <span className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full border-2 border-white bg-[#B7791F] ring-1 ring-[#B7791F]" aria-hidden="true" />
               day with a lead
             </p>
           </div>
-          <div className="mt-5 overflow-x-auto">
-            <ol
-              className="flex h-48 items-end gap-[3px] border-b border-navy-900/15"
-              style={{ minWidth: `${data.daily.length * 10}px` }}
-            >
-              {data.daily.map((d) => (
-                <li key={d.day} className="group relative flex h-full flex-1 flex-col items-center justify-end">
-                  {d.leads > 0 && <span className="mb-1 h-2 w-2 shrink-0 rounded-full bg-gold-400" aria-hidden="true" />}
-                  <span
-                    className="w-full rounded-t-[3px] bg-navy-900 transition-colors group-hover:bg-gold-600"
-                    style={{ height: `${(d.visitors / peak) * 100}%`, minHeight: d.visitors ? 3 : 0 }}
-                  />
-                  <span className="sr-only">
-                    {shortDay.format(new Date(`${d.day}T00:00:00Z`))}: {d.visitors} visitors, {d.views} page views, {d.leads} leads
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute bottom-full z-10 mb-2 hidden whitespace-nowrap rounded-md bg-navy-950 px-2.5 py-1.5 text-xs text-white group-hover:block"
-                  >
-                    {shortDay.format(new Date(`${d.day}T00:00:00Z`))} · {d.visitors} visitors · {d.leads} leads
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <div className="mt-2 flex justify-between text-xs text-muted">
-            <span>{shortDay.format(new Date(`${data.daily[0]?.day}T00:00:00Z`))}</span>
-            <span>Today</span>
-          </div>
+          <VisitorsChart daily={data.daily} />
         </section>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-3">
@@ -267,6 +236,133 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
   );
 }
 
+// Facebook-style blue for the analytics, with a deeper gold for lead days;
+// the pair passes the dataviz palette checks on white.
+const CHART_BLUE = "#1877F2";
+const LEAD_GOLD = "#B7791F";
+
+// Round the y-axis top up to a friendly number (1, 2, 5, 10, 20, 50…).
+function niceMax(value: number) {
+  if (value <= 4) return 4;
+  const magnitude = 10 ** Math.floor(Math.log10(value / 4));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * magnitude).find((m) => m * 4 >= value) ?? 10 * magnitude;
+  return step * 4;
+}
+
+type Day = { day: string; visitors: number; views: number; leads: number };
+
+// Line + soft area chart in the style of Facebook Insights. Hover a day for a
+// crosshair, a dot on the line, and the day's numbers.
+function VisitorsChart({ daily }: { daily: Day[] }) {
+  const n = Math.max(daily.length, 1);
+  const top = niceMax(Math.max(0, ...daily.map((d) => d.visitors)));
+  const y = (v: number) => 100 - (v / top) * 100;
+  const points = daily.map((d, i) => `${i + 0.5},${y(d.visitors)}`);
+  const line = `M${points.join("L")}`;
+  const area = `${line}L${n - 0.5},100L0.5,100Z`;
+  const ticks = [0, 1, 2, 3, 4].map((i) => (top / 4) * i);
+  const label = (day: string) => shortDay.format(new Date(`${day}T00:00:00Z`));
+
+  return (
+    <>
+      <div className="mt-6 flex gap-3">
+        <div className="relative h-56 w-8 shrink-0 text-right text-xs text-muted" aria-hidden="true">
+          {ticks.map((t) => (
+            <span key={t} className="tnum absolute right-0 -translate-y-1/2" style={{ top: `${y(t)}%` }}>
+              {t.toLocaleString("en-US")}
+            </span>
+          ))}
+        </div>
+        <div className="min-w-0 flex-1 overflow-x-auto">
+          <div className="relative h-56" style={{ minWidth: `${n * 10}px` }}>
+            {ticks.map((t) => (
+              <span
+                key={t}
+                aria-hidden="true"
+                className={`absolute inset-x-0 h-px ${t === 0 ? "bg-navy-900/20" : "bg-navy-900/[0.07]"}`}
+                style={{ top: `${y(t)}%` }}
+              />
+            ))}
+            <svg
+              viewBox={`0 0 ${n} 100`}
+              preserveAspectRatio="none"
+              className="absolute inset-0 h-full w-full overflow-visible"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="visitors-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={CHART_BLUE} stopOpacity="0.28" />
+                  <stop offset="100%" stopColor={CHART_BLUE} stopOpacity="0.02" />
+                </linearGradient>
+              </defs>
+              <path d={area} fill="url(#visitors-fill)" />
+              <path
+                d={line}
+                fill="none"
+                stroke={CHART_BLUE}
+                strokeWidth="2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+            <ol className="absolute inset-0 flex">
+              {daily.map((d, i) => (
+                <li key={d.day} className="group relative h-full flex-1">
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 group-hover:block"
+                    style={{ background: `${CHART_BLUE}55` }}
+                  />
+                  {d.leads > 0 && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white group-hover:hidden"
+                      style={{ top: `${y(d.visitors)}%`, background: LEAD_GOLD }}
+                    />
+                  )}
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow group-hover:block"
+                    style={{ top: `${y(d.visitors)}%`, background: d.leads > 0 ? LEAD_GOLD : CHART_BLUE }}
+                  />
+                  <span className="sr-only">
+                    {label(d.day)}: {d.visitors} visitors, {d.views} page views, {d.leads} leads
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute z-10 hidden whitespace-nowrap rounded-lg ${
+                      // Keep the tooltip inside the chart near either edge.
+                      i < n * 0.15 ? "left-0" : i > n * 0.85 ? "right-0" : "left-1/2 -translate-x-1/2"
+                    } bg-white px-3 py-2 text-xs text-ink shadow-[0_4px_16px_-4px_rgba(16,34,56,0.3)] ring-1 ring-navy-900/10 group-hover:block`}
+                    style={{ bottom: `calc(${100 - y(d.visitors)}% + 12px)` }}
+                  >
+                    <span className="block font-semibold">{label(d.day)}</span>
+                    <span className="mt-0.5 flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full" style={{ background: CHART_BLUE }} />
+                      <span className="tnum">{`${d.visitors} visitors · ${d.views} views`}</span>
+                    </span>
+                    {d.leads > 0 && (
+                      <span className="mt-0.5 flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full" style={{ background: LEAD_GOLD }} />
+                        <span className="tnum">{`${d.leads} ${d.leads === 1 ? "lead" : "leads"}`}</span>
+                      </span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div className="mt-2 flex justify-between pl-11 text-xs text-muted">
+        <span>{daily[0] ? label(daily[0].day) : ""}</span>
+        <span>Today</span>
+      </div>
+    </>
+  );
+}
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="grid min-h-[100dvh] place-items-center bg-navy-950 px-4 py-16">{children}</main>
@@ -320,8 +416,8 @@ function RankList({
                   {row.count.toLocaleString("en-US")} <span className="sr-only">{unit}</span>
                 </span>
               </div>
-              <div className="mt-1.5 h-1.5 rounded-full bg-navy-900/[0.07]">
-                <div className="h-full rounded-full bg-gold-400" style={{ width: `${(row.count / top) * 100}%` }} />
+              <div className="mt-1.5 h-1.5 rounded-full bg-[#1877F2]/10">
+                <div className="h-full rounded-full" style={{ width: `${(row.count / top) * 100}%`, background: CHART_BLUE }} />
               </div>
             </li>
           ))}
