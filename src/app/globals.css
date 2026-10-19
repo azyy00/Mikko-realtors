@@ -384,10 +384,6 @@ a[aria-current="page"]:not(header a) {
   }
 }
 
-.intro-watermark {
-  -webkit-text-stroke: 1.5px rgb(23 48 71 / 0.07);
-}
-
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .intro-rise {

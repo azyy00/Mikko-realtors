@@ -14,6 +14,7 @@
     "@neondatabase/serverless": "^1.2.0",
     "@phosphor-icons/react": "^2.1.10",
     "clsx": "^2.1.1",
+    "cobe": "^2.0.1",
     "framer-motion": "^11.3.19",
     "maplibre-gl": "^4.7.1",
     "next": "^15.5.16",

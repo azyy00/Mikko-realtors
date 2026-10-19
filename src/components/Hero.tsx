@@ -6,6 +6,7 @@ import {
   Star,
 } from "@phosphor-icons/react/dist/ssr";
 import HeroVideo from "./HeroVideo";
+import { Globe } from "@/components/ui/globe";
 import { getGoogleReviews } from "@/lib/google-reviews";
 import Marquee from "./Marquee";
 
@@ -42,13 +43,11 @@ export default async function Hero() {
         aria-labelledby="home-heading"
         className="relative isolate overflow-hidden bg-paper pb-8 pt-7 sm:pb-16 sm:pt-16 lg:pb-20 lg:pt-20"
       >
-        {/* Oversized outlined word, purely decorative, bleeding off the right edge. */}
-        <span
-          aria-hidden="true"
-          className="intro-watermark pointer-events-none absolute -right-[4vw] top-1/2 -z-10 -translate-y-1/2 select-none font-display text-[34vw] font-semibold leading-none tracking-tight text-transparent sm:text-[26vw]"
-        >
-          VEGAS
-        </span>
+        {/* Spinning globe with arcs into Las Vegas, bleeding off the right edge.
+            Faint behind the copy on phones, fuller beside it on desktop. */}
+        <div className="absolute -right-24 -top-6 -z-10 aspect-square w-[17rem] opacity-50 sm:-right-28 sm:top-1/2 sm:w-[30rem] sm:-translate-y-1/2 sm:opacity-60 lg:-right-44 lg:w-[42rem] lg:opacity-45">
+          <Globe className="max-w-none" />
+        </div>
 
         <div className="container-x">
           <h1
